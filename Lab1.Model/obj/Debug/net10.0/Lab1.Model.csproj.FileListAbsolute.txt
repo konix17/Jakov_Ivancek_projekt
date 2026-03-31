@@ -1,0 +1,11 @@
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\bin\Debug\net10.0\Lab1.Model.deps.json
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\bin\Debug\net10.0\Lab1.Model.dll
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\bin\Debug\net10.0\Lab1.Model.pdb
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\obj\Debug\net10.0\Lab1.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\obj\Debug\net10.0\Lab1.Model.AssemblyInfoInputs.cache
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\obj\Debug\net10.0\Lab1.Model.AssemblyInfo.cs
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\obj\Debug\net10.0\Lab1.Model.csproj.CoreCompileInputs.cache
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\obj\Debug\net10.0\Lab1.Model.dll
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\obj\Debug\net10.0\refint\Lab1.Model.dll
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\obj\Debug\net10.0\Lab1.Model.pdb
+C:\Users\yakij\Desktop\lab1-asp\Lab1.Model\obj\Debug\net10.0\ref\Lab1.Model.dll
