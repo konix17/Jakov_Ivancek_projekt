@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "powershell -ExecutionPolicy Bypass -NoProfile -File \".github/hooks/stop_hook.ps1\"",
+        "cwd": "."
+      }
+    ]
+  }
+}
