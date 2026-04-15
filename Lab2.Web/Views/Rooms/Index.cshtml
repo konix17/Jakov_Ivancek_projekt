@@ -1,0 +1,52 @@
+@model IEnumerable<Lab1.Model.Entities.Room>
+
+@{
+    ViewData["Title"] = "Rooms";
+    ViewData["Description"] = "Room inventory, availability and current hotel assignments.";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <span class="current">Rooms</span>
+    </nav>
+}
+
+<div class="panel-card">
+    <div class="section-header">
+        <h2>Room listings</h2>
+        <a class="btn btn-primary" asp-controller="Rooms" asp-action="Index">Refresh</a>
+    </div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Type</th>
+                <th>Floor</th>
+                <th>Capacity</th>
+                <th>Nightly</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in Model)
+            {
+                <tr>
+                    <td>@room.RoomNumber</td>
+                    <td>@room.RoomType</td>
+                    <td>@room.Floor</td>
+                    <td>@room.Capacity</td>
+                    <td>@room.PricePerNight:C</td>
+                    <td>
+                        <span class="badge @(room.IsAvailable ? "badge-success" : "badge-danger")">@(room.IsAvailable ? "Available" : "Occupied")</span>
+                    </td>
+                    <td>
+                        <a class="btn btn-secondary" asp-controller="Rooms" asp-action="Details" asp-route-id="@room.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

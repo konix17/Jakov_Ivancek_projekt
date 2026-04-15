@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Console\\Lab1.Console.csproj": {}
+    "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Console\\Lab1.Console.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Console\\Lab1.Console.csproj": {
+    "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Console\\Lab1.Console.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Console\\Lab1.Console.csproj",
+        "projectUniqueName": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Console\\Lab1.Console.csproj",
         "projectName": "Lab1.Console",
-        "projectPath": "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Console\\Lab1.Console.csproj",
+        "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Console\\Lab1.Console.csproj",
         "packagesPath": "C:\\Users\\yakij\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Console\\obj\\",
+        "outputPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Console\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\yakij\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,8 +26,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Model\\Lab1.Model.csproj": {
-                "projectPath": "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Model\\Lab1.Model.csproj"
+              "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj": {
+                "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj"
               }
             }
           }
@@ -341,14 +341,14 @@
         }
       }
     },
-    "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Model\\Lab1.Model.csproj": {
+    "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Model\\Lab1.Model.csproj",
+        "projectUniqueName": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj",
         "projectName": "Lab1.Model",
-        "projectPath": "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Model\\Lab1.Model.csproj",
+        "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj",
         "packagesPath": "C:\\Users\\yakij\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yakij\\Desktop\\lab1-asp\\Lab1.Model\\obj\\",
+        "outputPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\yakij\\AppData\\Roaming\\NuGet\\NuGet.Config"

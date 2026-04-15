@@ -32,7 +32,13 @@ $outFile = Join-Path $logDir "chat_${dateStamp}_${sessionId}.md"
 Get-Content $transcriptPath | ForEach-Object {
     try {
         $entry = $_ | ConvertFrom-Json
-        $time = if ($entry.timestamp) { $entry.timestamp.Substring(11, 8) } else { "??:??:??" }
+        $time = if ($entry.timestamp) {
+            try {
+                ([DateTimeOffset]::Parse($entry.timestamp)).ToLocalTime().ToString('HH:mm:ss')
+            } catch {
+                $entry.timestamp.Substring(11, 8)
+            }
+        } else { "??:??:??" }
 
         switch ($entry.type) {
             "user.message" {

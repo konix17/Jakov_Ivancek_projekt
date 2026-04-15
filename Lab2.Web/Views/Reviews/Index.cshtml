@@ -1,0 +1,48 @@
+@model IEnumerable<Lab1.Model.Entities.Review>
+
+@{
+    ViewData["Title"] = "Reviews";
+    ViewData["Description"] = "Guest feedback and hotel ratings.";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <span class="current">Reviews</span>
+    </nav>
+}
+
+<div class="panel-card">
+    <div class="section-header">
+        <h2>Guest reviews</h2>
+        <a class="btn btn-primary" asp-controller="Reviews" asp-action="Index">Refresh</a>
+    </div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Rating</th>
+                <th>Guest</th>
+                <th>Hotel</th>
+                <th>Date</th>
+                <th>Comment</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model)
+            {
+                <tr>
+                    <td>@review.Rating / 5</td>
+                    <td>@review.Guest?.FirstName @review.Guest?.LastName</td>
+                    <td>@review.Hotel?.Name</td>
+                    <td>@review.CreatedAt:d</td>
+                    <td>@(review.Comment?.Length > 60 ? review.Comment.Substring(0, 60) + "..." : review.Comment)</td>
+                    <td>
+                        <a class="btn btn-secondary" asp-controller="Reviews" asp-action="Details" asp-route-id="@review.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

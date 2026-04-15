@@ -1,0 +1,62 @@
+@model Lab1.Model.Entities.Review
+
+@{
+    ViewData["Title"] = "Review Details";
+    ViewData["Description"] = "Rating: " + Model.Rating + "/5";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <a asp-controller="Reviews" asp-action="Index">Reviews</a>
+        <span class="sep">/</span>
+        <span class="current">Review @Model.Id</span>
+    </nav>
+}
+
+<div class="detail-grid">
+    <div class="panel-card">
+        <div class="section-header">
+            <h2>Feedback details</h2>
+        </div>
+        <dl class="detail-list">
+            <dt>Rating</dt>
+            <dd>@Model.Rating / 5</dd>
+            <dt>Comment</dt>
+            <dd>@Model.Comment</dd>
+            <dt>Date</dt>
+            <dd>@Model.CreatedAt:g</dd>
+            <dt>Guest</dt>
+            <dd>
+                @if (Model.Guest != null)
+                {
+                    <a asp-controller="Guests" asp-action="Details" asp-route-id="@Model.Guest.Id">@Model.Guest.FirstName @Model.Guest.LastName</a>
+                }
+                else
+                {
+                    @:Unknown
+                }
+            </dd>
+            <dt>Hotel</dt>
+            <dd>
+                @if (Model.Hotel != null)
+                {
+                    <a asp-controller="Hotels" asp-action="Details" asp-route-id="@Model.Hotel.Id">@Model.Hotel.Name</a>
+                }
+                else
+                {
+                    @:Unknown
+                }
+            </dd>
+        </dl>
+    </div>
+
+    <aside class="panel-card">
+        <div class="stat-block">
+            <strong>@(Model.Rating >= 4 ? "Positive" : Model.Rating >= 2 ? "Neutral" : "Critical")</strong>
+            <span>Review tone</span>
+        </div>
+        <a class="btn btn-secondary" asp-controller="Reviews" asp-action="Index">Back to Reviews</a>
+    </aside>
+</div>

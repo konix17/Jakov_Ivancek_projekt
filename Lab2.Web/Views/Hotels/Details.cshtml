@@ -1,0 +1,56 @@
+@model Lab1.Model.Entities.Hotel
+
+@{
+    ViewData["Title"] = "Hotel Details";
+    ViewData["Description"] = Model.Name;
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <a asp-controller="Hotels" asp-action="Index">Hotels</a>
+        <span class="sep">/</span>
+        <span class="current">@Model.Name</span>
+    </nav>
+}
+
+<div class="detail-grid">
+    <div class="panel-card">
+        <div class="section-header">
+            <h2>Overview</h2>
+        </div>
+        <dl class="detail-list">
+            <dt>Name</dt>
+            <dd>@Model.Name</dd>
+            <dt>Address</dt>
+            <dd>@Model.Address</dd>
+            <dt>City</dt>
+            <dd>@Model.City</dd>
+            <dt>Rating</dt>
+            <dd>@Model.Rating / 5</dd>
+            <dt>Phone</dt>
+            <dd>@Model.PhoneNumber</dd>
+        </dl>
+    </div>
+
+    <aside class="panel-card">
+        <div class="stat-block">
+            <strong>@(Model.Rooms?.Count ?? 0)</strong>
+            <span>Rooms</span>
+        </div>
+        <div class="stat-block">
+            <strong>@(Model.Employees?.Count ?? 0)</strong>
+            <span>Employees</span>
+        </div>
+        <div class="stat-block">
+            <strong>@(Model.Services?.Count ?? 0)</strong>
+            <span>Services</span>
+        </div>
+        <div class="stat-block">
+            <strong>@(Model.Reservations?.Count ?? 0)</strong>
+            <span>Reservations</span>
+        </div>
+        <a class="btn btn-secondary" asp-controller="Hotels" asp-action="Index">Back to Hotels</a>
+    </aside>
+</div>

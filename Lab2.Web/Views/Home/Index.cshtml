@@ -1,0 +1,89 @@
+﻿@model Lab2.Web.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Operations Dashboard";
+    ViewData["Description"] = "Review hotel occupancy, service availability and guest metrics at a glance.";
+}
+
+<div class="panel-card">
+    <div class="section-header">
+        <div>
+            <h2>Control center</h2>
+            <p class="page-note">A single dashboard for all hotel management data from reservations to staff and payments.</p>
+        </div>
+    </div>
+    <div class="summary-grid">
+        <div class="summary-card">
+            <span class="stat-label">Hotels</span>
+            <span class="stat-value">@Model.HotelsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Rooms</span>
+            <span class="stat-value">@Model.RoomsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Guests</span>
+            <span class="stat-value">@Model.GuestsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Confirmed stays</span>
+            <span class="stat-value">@Model.ConfirmedReservationsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Reservations</span>
+            <span class="stat-value">@Model.ReservationsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Services</span>
+            <span class="stat-value">@Model.ServicesCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Employees</span>
+            <span class="stat-value">@Model.EmployeesCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Payments</span>
+            <span class="stat-value">@Model.PaymentsCount</span>
+        </div>
+    </div>
+</div>
+
+<div class="panel-card">
+    <div class="section-header">
+        <h2>Quick links</h2>
+    </div>
+    <div class="link-grid">
+        <a class="card-link" asp-controller="Hotels" asp-action="Index">
+            Hotels
+            <small>Browse hotel records and details</small>
+        </a>
+        <a class="card-link" asp-controller="Rooms" asp-action="Index">
+            Rooms
+            <small>Inspect room status and availability</small>
+        </a>
+        <a class="card-link" asp-controller="Guests" asp-action="Index">
+            Guests
+            <small>Review guest profiles and reservations</small>
+        </a>
+        <a class="card-link" asp-controller="Reservations" asp-action="Index">
+            Reservations
+            <small>Track booking status and stay dates</small>
+        </a>
+        <a class="card-link" asp-controller="Services" asp-action="Index">
+            Services
+            <small>Manage service offerings and pricing</small>
+        </a>
+        <a class="card-link" asp-controller="Employees" asp-action="Index">
+            Employees
+            <small>See team members and operational roles</small>
+        </a>
+        <a class="card-link" asp-controller="Payments" asp-action="Index">
+            Payments
+            <small>Monitor payment status and records</small>
+        </a>
+        <a class="card-link" asp-controller="Reviews" asp-action="Index">
+            Reviews
+            <small>Read guest feedback and ratings</small>
+        </a>
+    </div>
+</div>
