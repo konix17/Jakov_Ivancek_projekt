@@ -8,15 +8,15 @@
     ".NETCoreApp,Version=v10.0": {
       "Lab2.Web/1.0.0": {
         "dependencies": {
-          "Lab1.Model": "1.0.0"
+          "Lab2.Model": "1.0.0"
         },
         "runtime": {
           "Lab2.Web.dll": {}
         }
       },
-      "Lab1.Model/1.0.0": {
+      "Lab2.Model/1.0.0": {
         "runtime": {
-          "Lab1.Model.dll": {
+          "Lab2.Model.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -30,7 +30,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Lab1.Model/1.0.0": {
+    "Lab2.Model/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -4,14 +4,14 @@
     "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Web\\Lab2.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj": {
+    "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Model\\Lab2.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj",
-        "projectName": "Lab1.Model",
-        "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj",
+        "projectUniqueName": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Model\\Lab2.Model.csproj",
+        "projectName": "Lab2.Model",
+        "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Model\\Lab2.Model.csproj",
         "packagesPath": "C:\\Users\\yakij\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\obj\\",
+        "outputPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Model\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\yakij\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -359,8 +359,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj": {
-                "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj"
+              "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Model\\Lab2.Model.csproj": {
+                "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Model\\Lab2.Model.csproj"
               }
             }
           }

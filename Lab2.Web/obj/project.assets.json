@@ -2,28 +2,28 @@
   "version": 3,
   "targets": {
     "net10.0": {
-      "Lab1.Model/1.0.0": {
+      "Lab2.Model/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
         "compile": {
-          "bin/placeholder/Lab1.Model.dll": {}
+          "bin/placeholder/Lab2.Model.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Lab1.Model.dll": {}
+          "bin/placeholder/Lab2.Model.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "Lab1.Model/1.0.0": {
+    "Lab2.Model/1.0.0": {
       "type": "project",
-      "path": "../Lab1.Model/Lab1.Model.csproj",
-      "msbuildProject": "../Lab1.Model/Lab1.Model.csproj"
+      "path": "../Lab2.Model/Lab2.Model.csproj",
+      "msbuildProject": "../Lab2.Model/Lab2.Model.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
-      "Lab1.Model >= 1.0.0"
+      "Lab2.Model >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -51,8 +51,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj": {
-              "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab1.Model\\Lab1.Model.csproj"
+            "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Model\\Lab2.Model.csproj": {
+              "projectPath": "C:\\Users\\yakij\\Desktop\\Jakov_Ivancek_projekt\\Lab2.Model\\Lab2.Model.csproj"
             }
           }
         }

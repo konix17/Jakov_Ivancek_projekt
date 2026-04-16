@@ -24,7 +24,7 @@
             <dt>Reservation code</dt>
             <dd>@Model.ReservationCode</dd>
             <dt>Reservation date</dt>
-            <dd>@Model.ReservationDate:g</dd>
+            <dd>@Model.ReservationDate.ToString("dd.MM.yyyy.")</dd>
             <dt>Guest</dt>
             <dd>
                 @if (Model.Guest != null)
@@ -48,9 +48,9 @@
                 }
             </dd>
             <dt>Stay period</dt>
-            <dd>@Model.CheckInDate:d — @Model.CheckOutDate:d</dd>
+            <dd>@Model.CheckInDate.ToString("dd.MM.yyyy.") — @Model.CheckOutDate.ToString("dd.MM.yyyy.")</dd>
             <dt>Total price</dt>
-            <dd>@Model.TotalPrice:C</dd>
+            <dd>@Model.TotalPrice€</dd>
             <dt>Status</dt>
             <dd><span class="badge badge-info">@Model.Status</span></dd>
         </dl>

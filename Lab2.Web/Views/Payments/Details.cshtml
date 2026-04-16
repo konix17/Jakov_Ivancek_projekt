@@ -22,9 +22,9 @@
         </div>
         <dl class="detail-list">
             <dt>Amount</dt>
-            <dd>@Model.Amount:C</dd>
+            <dd>@Model.Amount€</dd>
             <dt>Date</dt>
-            <dd>@Model.PaymentDate:g</dd>
+            <td>@Model.PaymentDate.ToString("dd.MM.yyyy.")</td>
             <dt>Method</dt>
             <dd>@Model.PaymentMethod</dd>
             <dt>Payment status</dt>

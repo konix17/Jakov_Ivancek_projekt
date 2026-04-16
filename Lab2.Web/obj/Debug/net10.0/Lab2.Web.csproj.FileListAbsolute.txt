@@ -7,8 +7,8 @@ C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\bin\Debug\net10.0\Lab2.Web
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\bin\Debug\net10.0\Lab2.Web.runtimeconfig.json
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\bin\Debug\net10.0\Lab2.Web.dll
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\bin\Debug\net10.0\Lab2.Web.pdb
-C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\bin\Debug\net10.0\Lab1.Model.dll
-C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\bin\Debug\net10.0\Lab1.Model.pdb
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\bin\Debug\net10.0\Lab2.Model.dll
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\bin\Debug\net10.0\Lab2.Model.pdb
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\Lab2.Web.csproj.AssemblyReference.cache
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\rpswa.dswa.cache.json
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\Lab2.Web.GeneratedMSBuildEditorConfig.editorconfig
@@ -25,6 +25,7 @@ C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\rjsmcsht
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\scopedcss\bundle\Lab2.Web.styles.css
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\scopedcss\projectbundle\Lab2.Web.bundle.scp.css
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\compressed\7um1une8ip-{0}-cezjbw1zir-cezjbw1zir.gz
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\compressed\77uaxy9fl2-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\compressed\lkrxz63ieq-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\compressed\lwnmrsxx9i-{0}-bqjiyaj88i-bqjiyaj88i.gz
@@ -99,4 +100,3 @@ C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\refint\L
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\Lab2.Web.pdb
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\Lab2.Web.genruntimeconfig.cache
 C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\ref\Lab2.Web.dll
-C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab2.Web\obj\Debug\net10.0\compressed\7um1une8ip-{0}-cezjbw1zir-cezjbw1zir.gz

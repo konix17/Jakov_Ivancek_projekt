@@ -33,8 +33,8 @@
             @foreach (var payment in Model)
             {
                 <tr>
-                    <td>@payment.Amount:C</td>
-                    <td>@payment.PaymentDate:g</td>
+                    <td>@payment.Amount€</td>
+                    <td>@payment.PaymentDate.ToString("dd.MM.yyyy.")</td>
                     <td>@payment.PaymentMethod</td>
                     <td><span class="badge @(payment.IsPaid ? "badge-success" : "badge-warning")">@(payment.IsPaid ? "Paid" : "Pending")</span></td>
                     <td>@payment.Reservation?.ReservationCode</td>

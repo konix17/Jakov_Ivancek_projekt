@@ -34,7 +34,7 @@
                 <tr>
                     <td>@service.Name</td>
                     <td>@service.Hotel?.Name</td>
-                    <td>@service.Price:C</td>
+                    <td>@service.Price€</td>
                     <td><span class="badge @(service.IsAvailable ? "badge-success" : "badge-danger")">@(service.IsAvailable ? "Available" : "Unavailable")</span></td>
                     <td>
                         <a class="btn btn-secondary" asp-controller="Services" asp-action="Details" asp-route-id="@service.Id">Details</a>

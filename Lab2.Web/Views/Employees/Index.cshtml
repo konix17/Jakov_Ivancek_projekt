@@ -24,7 +24,6 @@
                 <th>Name</th>
                 <th>Role</th>
                 <th>Hotel</th>
-                <th>Hire date</th>
                 <th>Salary</th>
                 <th></th>
             </tr>
@@ -36,8 +35,7 @@
                     <td>@employee.FirstName @employee.LastName</td>
                     <td>@employee.Role</td>
                     <td>@employee.Hotel?.Name</td>
-                    <td>@employee.HireDate:d</td>
-                    <td>@employee.Salary:C</td>
+                    <td>@employee.Salary€</td>
                     <td>
                         <a class="btn btn-secondary" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">Details</a>
                     </td>
