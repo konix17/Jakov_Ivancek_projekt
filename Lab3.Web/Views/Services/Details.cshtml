@@ -1,0 +1,53 @@
+@model Lab3.Model.Entities.Service
+
+@{
+    ViewData["Title"] = "Service Details";
+    ViewData["Description"] = Model.Name;
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <a asp-controller="Services" asp-action="Index">Services</a>
+        <span class="sep">/</span>
+        <span class="current">@Model.Name</span>
+    </nav>
+}
+
+<div class="detail-grid">
+    <div class="panel-card">
+        <div class="section-header">
+            <h2>Service profile</h2>
+        </div>
+        <dl class="detail-list">
+            <dt>Name</dt>
+            <dd>@Model.Name</dd>
+            <dt>Description</dt>
+            <dd>@Model.Description</dd>
+            <dt>Price</dt>
+            <dd>@Model.Price€</dd>
+            <dt>Availability</dt>
+            <dd><span class="badge @(Model.IsAvailable ? "badge-success" : "badge-danger")">@(Model.IsAvailable ? "Available" : "Unavailable")</span></dd>
+            <dt>Hotel</dt>
+            <dd>
+                @if (Model.Hotel != null)
+                {
+                    <a asp-controller="Hotels" asp-action="Details" asp-route-id="@Model.Hotel.Id">@Model.Hotel.Name</a>
+                }
+                else
+                {
+                    @:Unassigned
+                }
+            </dd>
+        </dl>
+    </div>
+
+    <aside class="panel-card">
+        <div class="stat-block">
+            <strong>@Model.Reservations.Count</strong>
+            <span>Reservations used</span>
+        </div>
+        <a class="btn btn-secondary" asp-controller="Services" asp-action="Index">Back to Services</a>
+    </aside>
+</div>

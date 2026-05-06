@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Lab3.Model/Lab3.Model.csproj" />
+  <Project Path="Lab3.Web/Lab3.Web.csproj" />
+  <Project Path="Lab3.Console/Lab3.Console.csproj" />
+</Solution>

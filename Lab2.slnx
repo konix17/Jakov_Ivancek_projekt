@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="Lab2.Model/Lab2.Model.csproj" />
-  <Project Path="Lab2.Web/Lab2.Web.csproj" />
-  <Project Path="Lab2.Console/Lab2.Console.csproj" />
-</Solution>

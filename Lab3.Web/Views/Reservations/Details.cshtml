@@ -1,0 +1,70 @@
+@model Lab3.Model.Entities.Reservation
+
+@{
+    ViewData["Title"] = "Reservation Details";
+    ViewData["Description"] = Model.ReservationCode;
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <a asp-controller="Reservations" asp-action="Index">Reservations</a>
+        <span class="sep">/</span>
+        <span class="current">@Model.ReservationCode</span>
+    </nav>
+}
+
+<div class="detail-grid">
+    <div class="panel-card">
+        <div class="section-header">
+            <h2>Reservation summary</h2>
+        </div>
+        <dl class="detail-list">
+            <dt>Reservation code</dt>
+            <dd>@Model.ReservationCode</dd>
+            <dt>Reservation date</dt>
+            <dd>@Model.ReservationDate.ToString("dd.MM.yyyy.")</dd>
+            <dt>Guest</dt>
+            <dd>
+                @if (Model.Guest != null)
+                {
+                    <a asp-controller="Guests" asp-action="Details" asp-route-id="@Model.Guest.Id">@Model.Guest.FirstName @Model.Guest.LastName</a>
+                }
+                else
+                {
+                    @:Unknown
+                }
+            </dd>
+            <dt>Room</dt>
+            <dd>
+                @if (Model.Room != null)
+                {
+                    <a asp-controller="Rooms" asp-action="Details" asp-route-id="@Model.Room.Id">@Model.Room.RoomNumber</a>
+                }
+                else
+                {
+                    @:Unassigned
+                }
+            </dd>
+            <dt>Stay period</dt>
+            <dd>@Model.CheckInDate.ToString("dd.MM.yyyy.") — @Model.CheckOutDate.ToString("dd.MM.yyyy.")</dd>
+            <dt>Total price</dt>
+            <dd>@Model.TotalPrice€</dd>
+            <dt>Status</dt>
+            <dd><span class="badge badge-info">@Model.Status</span></dd>
+        </dl>
+    </div>
+
+    <aside class="panel-card">
+        <div class="stat-block">
+            <strong>@Model.Payments?.Count ?? 0</strong>
+            <span>Payments</span>
+        </div>
+        <div class="stat-block">
+            <strong>@Model.Services?.Count ?? 0</strong>
+            <span>Services</span>
+        </div>
+        <a class="btn btn-secondary" asp-controller="Reservations" asp-action="Index">Back to Reservations</a>
+    </aside>
+</div>

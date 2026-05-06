@@ -1,0 +1,57 @@
+@model Lab3.Model.Entities.Room
+
+@{
+    ViewData["Title"] = "Room Details";
+    ViewData["Description"] = "Room " + Model.RoomNumber + " in " + Model.Hotel?.Name;
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <a asp-controller="Rooms" asp-action="Index">Rooms</a>
+        <span class="sep">/</span>
+        <span class="current">@Model.RoomNumber</span>
+    </nav>
+}
+
+<div class="detail-grid">
+    <div class="panel-card">
+        <div class="section-header">
+            <h2>Room profile</h2>
+        </div>
+        <dl class="detail-list">
+            <dt>Room number</dt>
+            <dd>@Model.RoomNumber</dd>
+            <dt>Type</dt>
+            <dd>@Model.RoomType</dd>
+            <dt>Floor</dt>
+            <dd>@Model.Floor</dd>
+            <dt>Capacity</dt>
+            <dd>@Model.Capacity</dd>
+            <dt>Price per night</dt>
+            <dd>@Model.PricePerNight€</dd>
+            <dt>Status</dt>
+            <dd><span class="badge @(Model.IsAvailable ? "badge-success" : "badge-danger")">@(Model.IsAvailable ? "Available" : "Occupied")</span></dd>
+            <dt>Hotel</dt>
+            <dd>
+                @if (Model.Hotel != null)
+                {
+                    <a asp-controller="Hotels" asp-action="Details" asp-route-id="@Model.Hotel.Id">@Model.Hotel.Name</a>
+                }
+                else
+                {
+                    @:Unassigned
+                }
+            </dd>
+        </dl>
+    </div>
+
+    <aside class="panel-card">
+        <div class="stat-block">
+            <strong>@(Model.Reservations?.Count ?? 0)</strong>
+            <span>Related reservations</span>
+        </div>
+        <a class="btn btn-secondary" asp-controller="Rooms" asp-action="Index">Back to Rooms</a>
+    </aside>
+</div>

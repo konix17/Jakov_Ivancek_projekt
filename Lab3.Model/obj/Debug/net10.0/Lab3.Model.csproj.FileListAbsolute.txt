@@ -1,0 +1,13 @@
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\bin\Debug\net10.0\Lab3.Model.deps.json
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\bin\Debug\net10.0\Lab3.Model.dll
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\bin\Debug\net10.0\Lab3.Model.pdb
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\Lab3.Model.csproj.AssemblyReference.cache
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\Lab3.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\Lab3.Model.AssemblyInfoInputs.cache
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\Lab3.Model.AssemblyInfo.cs
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\Lab3.Model.csproj.CoreCompileInputs.cache
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\Lab3.Model.sourcelink.json
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\Lab3.Model.dll
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\refint\Lab3.Model.dll
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\Lab3.Model.pdb
+C:\Users\yakij\Desktop\Jakov_Ivancek_projekt\Lab3.Model\obj\Debug\net10.0\ref\Lab3.Model.dll

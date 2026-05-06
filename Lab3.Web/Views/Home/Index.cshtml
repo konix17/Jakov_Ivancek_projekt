@@ -1,0 +1,119 @@
+﻿@model Lab3.Web.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Operations Dashboard";
+    ViewData["Description"] = "Review hotel occupancy, service availability and guest metrics at a glance.";
+}
+
+<div class="panel-card">
+    <div class="section-header">
+        <div>
+            <h2>Operations pulse</h2>
+            <p class="page-note">A live dashboard showing occupancy, revenue, guest flow and service availability in a single view.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-metrics">
+        <div class="metric-card">
+            <span class="metric-label">Current occupancy</span>
+            <strong class="metric-value">@Model.OccupancyRate%</strong>
+            <div class="metric-note">Confirmed rooms currently occupied</div>
+            <div class="progress-line"><div class="progress-bar" style="width:@(Model.OccupancyRate)%;"></div></div>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Revenue collected</span>
+            <strong class="metric-value">€@Model.RevenueCollected</strong>
+            <div class="metric-note">Total confirmed payment amount</div>
+            <div class="progress-line"><div class="progress-bar" style="width:@(Math.Min(100, Model.RevenueCollected / 1000m * 100))%;"></div></div>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Service availability</span>
+            <strong class="metric-value">@Model.ServiceAvailabilityRate%</strong>
+            <div class="metric-note">Hotel services ready for guests</div>
+            <div class="progress-line"><div class="progress-bar" style="width:@(Model.ServiceAvailabilityRate)%;"></div></div>
+        </div>
+
+        <div class="metric-card">
+            <span class="metric-label">Pending payments</span>
+            <strong class="metric-value">€@Model.RevenuePending</strong>
+            <div class="metric-note">Outstanding payment balance</div>
+            <div class="progress-line"><div class="progress-bar pending" style="width:@(Math.Min(100, Model.RevenuePending / 1000m * 100))%;"></div></div>
+        </div>
+    </div>
+</div>
+
+<div class="panel-card">
+    <div class="section-header">
+        <h2>Live insights</h2>
+    </div>
+    <div class="dashboard-grid">
+        <div class="highlight-card">
+            <h3>Top performing hotel</h3>
+            <div class="highlight-value">@Model.TopHotelName</div>
+            <div class="highlight-meta">
+                <span class="badge badge-info">Rating @Model.TopHotelRating</span>
+                <span class="badge badge-success">Most booked</span>
+            </div>
+            <p class="highlight-note">This hotel is the strongest performer based on guest ratings and current booking momentum.</p>
+        </div>
+
+        <div class="highlight-card">
+            <h3>Next check-in</h3>
+            <div class="highlight-value">@Model.NextCheckIn</div>
+            <div class="highlight-meta">
+                <span class="badge badge-warning">Arrival</span>
+                <span class="badge badge-info">Confirmed stay</span>
+            </div>
+            <p class="highlight-note">Keep reception and room preparation aligned around the next arriving guest.</p>
+        </div>
+
+        <div class="highlight-card">
+            <h3>Guest feedback</h3>
+            <div class="highlight-value">Latest review</div>
+            <div class="highlight-comment">@Model.LatestReviewSummary</div>
+            <p class="highlight-note">Track the latest guest sentiment for quick quality adjustments.</p>
+        </div>
+    </div>
+</div>
+
+<div class="panel-card">
+    <div class="section-header">
+        <h2>Core resource counts</h2>
+    </div>
+    <div class="summary-grid">
+        <div class="summary-card">
+            <span class="stat-label">Hotels</span>
+            <span class="stat-value">@Model.HotelsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Rooms</span>
+            <span class="stat-value">@Model.RoomsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Guests</span>
+            <span class="stat-value">@Model.GuestsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Confirmed stays</span>
+            <span class="stat-value">@Model.ConfirmedReservationsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Reservations</span>
+            <span class="stat-value">@Model.ReservationsCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Services</span>
+            <span class="stat-value">@Model.ServicesCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Employees</span>
+            <span class="stat-value">@Model.EmployeesCount</span>
+        </div>
+        <div class="summary-card">
+            <span class="stat-label">Payments</span>
+            <span class="stat-value">@Model.PaymentsCount</span>
+        </div>
+    </div>
+</div>
