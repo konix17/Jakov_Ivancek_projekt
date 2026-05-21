@@ -1,0 +1,28 @@
+@model GuestFormModel
+
+@{
+    ViewData["Title"] = "Create Guest";
+    ViewData["Description"] = "Add a new guest profile.";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <a asp-controller="Guests" asp-action="Index">Guests</a>
+        <span class="sep">/</span>
+        <span class="current">Create</span>
+    </nav>
+}
+
+<div class="panel-card">
+    <h2>Create Guest</h2>
+    <form asp-action="Create" method="post" novalidate>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @await Html.PartialAsync("_GuestForm", Model)
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>

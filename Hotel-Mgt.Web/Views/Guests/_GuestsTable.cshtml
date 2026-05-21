@@ -1,0 +1,31 @@
+@model IEnumerable<Guest>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Reservations</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var guest in Model)
+        {
+            <tr>
+                <td>@guest.FirstName @guest.LastName</td>
+                <td>@guest.Email</td>
+                <td>@guest.PhoneNumber</td>
+                <td>@guest.Reservations.Count</td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="btn btn-secondary" asp-controller="Guests" asp-action="Details" asp-route-id="@guest.Id">Details</a>
+                        <a class="btn btn-primary" asp-controller="Guests" asp-action="Edit" asp-route-id="@guest.Id">Edit</a>
+                        <a class="btn btn-danger" asp-controller="Guests" asp-action="Delete" asp-route-id="@guest.Id">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,16 @@
+@model DateTimePickerModel
+
+<div class="form-group datetime-picker">
+    <label for="@Model.InputId">@Model.Label</label>
+    <input id="@Model.InputId"
+           name="@Model.Name"
+           type="text"
+           class="form-control flatpickr-datetime"
+           data-input
+           data-val="true"
+           data-val-required="This field is required."
+           value="@(Model.Value.HasValue ? Model.Value.Value.ToString("yyyy-MM-dd") : string.Empty)"
+           placeholder="@Model.Placeholder"
+           autocomplete="off" />
+    <span class="text-danger field-validation-valid" data-valmsg-for="@Model.Name" data-valmsg-replace="true"></span>
+</div>

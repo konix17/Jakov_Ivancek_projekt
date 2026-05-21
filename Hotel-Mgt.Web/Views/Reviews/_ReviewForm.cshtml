@@ -1,0 +1,53 @@
+@model ReviewFormModel
+
+<div class="form-grid">
+    <div class="form-group">
+        <label asp-for="Rating"></label>
+        <input asp-for="Rating" class="form-control" type="number" min="1" max="5" />
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+    <div class="form-group full-span">
+        <label asp-for="Comment"></label>
+        <textarea asp-for="Comment" class="form-control"></textarea>
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+    @if (Model.Id != 0)
+    {
+        <div class="form-group full-span">
+            @await Html.PartialAsync("~/Views/Shared/_DateTimePicker.cshtml", new DateTimePickerModel
+            {
+                Label = "Created at",
+                InputId = "review-date",
+                Name = "CreatedAt",
+                Value = Model.CreatedAt,
+                Placeholder = "dd.MM.yyyy."
+            })
+        </div>
+    }
+    <div class="form-group autocomplete-block full-span">
+        @await Html.PartialAsync("~/Views/Shared/_AutocompleteDropdown.cshtml", new AutocompleteDropdownModel
+        {
+            Label = "Guest",
+            InputId = "guest-selection",
+            InputName = "GuestSearch",
+            HiddenName = "GuestId",
+            SearchUrl = Url.Action("Autocomplete", "Guests") ?? string.Empty,
+            SelectedId = Model.GuestId,
+            SelectedText = $"{ViewBag.SelectedGuestName}",
+            Placeholder = "Search guests..."
+        })
+    </div>
+    <div class="form-group autocomplete-block full-span">
+        @await Html.PartialAsync("~/Views/Shared/_AutocompleteDropdown.cshtml", new AutocompleteDropdownModel
+        {
+            Label = "Hotel",
+            InputId = "hotel-selection",
+            InputName = "HotelSearch",
+            HiddenName = "HotelId",
+            SearchUrl = Url.Action("Autocomplete", "Hotels") ?? string.Empty,
+            SelectedId = Model.HotelId,
+            SelectedText = $"{ViewBag.SelectedHotelName}",
+            Placeholder = "Search hotels..."
+        })
+    </div>
+</div>

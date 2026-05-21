@@ -1,0 +1,39 @@
+@model IEnumerable<Reservation>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Guest</th>
+            <th>Room</th>
+            <th>Hotel</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reservation in Model)
+        {
+            <tr>
+                <td>@reservation.ReservationCode</td>
+                <td>@reservation.Guest?.FirstName @reservation.Guest?.LastName</td>
+                <td>@reservation.Room?.RoomNumber</td>
+                <td>@reservation.Room?.Hotel?.Name</td>
+                <td>@reservation.CheckInDate.ToString("dd.MM.yyyy.")</td>
+                <td>@reservation.CheckOutDate.ToString("dd.MM.yyyy.")</td>
+                <td><span class="badge badge-info">@reservation.Status</span></td>
+                <td>@reservation.TotalPrice€</td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="btn btn-secondary" asp-controller="Reservations" asp-action="Details" asp-route-id="@reservation.Id">Details</a>
+                        <a class="btn btn-primary" asp-controller="Reservations" asp-action="Edit" asp-route-id="@reservation.Id">Edit</a>
+                        <a class="btn btn-danger" asp-controller="Reservations" asp-action="Delete" asp-route-id="@reservation.Id">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

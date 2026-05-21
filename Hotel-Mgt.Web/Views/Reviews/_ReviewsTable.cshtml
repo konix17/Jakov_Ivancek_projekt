@@ -1,0 +1,33 @@
+@model IEnumerable<Review>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Rating</th>
+            <th>Guest</th>
+            <th>Hotel</th>
+            <th>Date</th>
+            <th>Comment</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.Rating / 5</td>
+                <td>@review.Guest?.FirstName @review.Guest?.LastName</td>
+                <td>@review.Hotel?.Name</td>
+                <td>@review.CreatedAt.ToString("dd.MM.yyyy.")</td>
+                <td>@(review.Comment?.Length > 60 ? review.Comment.Substring(0, 60) + "..." : review.Comment)</td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="btn btn-secondary" asp-controller="Reviews" asp-action="Details" asp-route-id="@review.Id">Details</a>
+                        <a class="btn btn-primary" asp-controller="Reviews" asp-action="Edit" asp-route-id="@review.Id">Edit</a>
+                        <a class="btn btn-danger" asp-controller="Reviews" asp-action="Delete" asp-route-id="@review.Id">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

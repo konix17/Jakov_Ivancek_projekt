@@ -1,0 +1,13 @@
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/bin/Debug/net10.0/HotelMgt.Model.deps.json
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/bin/Debug/net10.0/HotelMgt.Model.dll
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/bin/Debug/net10.0/HotelMgt.Model.pdb
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/Hotel-Mgt.Model.csproj.AssemblyReference.cache
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/Hotel-Mgt.Model.GeneratedMSBuildEditorConfig.editorconfig
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/Hotel-Mgt.Model.AssemblyInfoInputs.cache
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/Hotel-Mgt.Model.AssemblyInfo.cs
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/Hotel-Mgt.Model.csproj.CoreCompileInputs.cache
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/Hotel-Mgt.Model.sourcelink.json
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/HotelMgt.Model.dll
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/refint/HotelMgt.Model.dll
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/HotelMgt.Model.pdb
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Model/obj/Debug/net10.0/ref/HotelMgt.Model.dll

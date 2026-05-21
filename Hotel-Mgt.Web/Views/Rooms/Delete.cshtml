@@ -1,0 +1,28 @@
+@model Room
+
+@{
+    ViewData["Title"] = "Delete Room";
+    ViewData["Description"] = "Confirm room deletion.";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <a asp-controller="Rooms" asp-action="Index">Rooms</a>
+        <span class="sep">/</span>
+        <span class="current">Delete</span>
+    </nav>
+}
+
+<div class="panel-card">
+    <h2>Delete Room</h2>
+    <p>Are you sure you want to delete room <strong>@Model.RoomNumber</strong>?</p>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>

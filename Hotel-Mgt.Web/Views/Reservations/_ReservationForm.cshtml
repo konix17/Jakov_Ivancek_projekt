@@ -1,0 +1,87 @@
+@model ReservationFormModel
+
+<div class="form-grid">
+    <div class="form-group">
+        <label asp-for="ReservationCode"></label>
+        <input asp-for="ReservationCode" class="form-control" />
+        <span asp-validation-for="ReservationCode" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        @await Html.PartialAsync("~/Views/Shared/_DateTimePicker.cshtml", new DateTimePickerModel
+        {
+            Label = "Reservation date",
+            InputId = "reservation-date",
+            Name = "ReservationDate",
+            Value = Model.ReservationDate,
+            Placeholder = "dd.MM.yyyy."
+        })
+    </div>
+    <div class="form-group">
+        @await Html.PartialAsync("~/Views/Shared/_DateTimePicker.cshtml", new DateTimePickerModel
+        {
+            Label = "Check-in date",
+            InputId = "checkin-date",
+            Name = "CheckInDate",
+            Value = Model.CheckInDate,
+            Placeholder = "dd.MM.yyyy."
+        })
+    </div>
+    <div class="form-group">
+        @await Html.PartialAsync("~/Views/Shared/_DateTimePicker.cshtml", new DateTimePickerModel
+        {
+            Label = "Check-out date",
+            InputId = "checkout-date",
+            Name = "CheckOutDate",
+            Value = Model.CheckOutDate,
+            Placeholder = "dd.MM.yyyy."
+        })
+    </div>
+    <div class="form-group">
+        <label asp-for="TotalPrice"></label>
+        <input asp-for="TotalPrice" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="TotalPrice" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Status"></label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<ReservationStatus>()" class="form-control"></select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+    <div class="form-group autocomplete-block">
+        @await Html.PartialAsync("~/Views/Shared/_AutocompleteDropdown.cshtml", new AutocompleteDropdownModel
+        {
+            Label = "Guest",
+            InputId = "guest-selection",
+            InputName = "GuestSearch",
+            HiddenName = "GuestId",
+            SearchUrl = Url.Action("Autocomplete", "Guests") ?? string.Empty,
+            SelectedId = Model.GuestId,
+            SelectedText = $"{ViewBag.SelectedGuestName}",
+            Placeholder = "Search guests..."
+        })
+    </div>
+    <div class="form-group">
+        <label asp-for="HotelId"></label>
+        <select asp-for="HotelId" asp-items='@(new SelectList(ViewBag.Hotels, "Id", "Name", Model.HotelId))' class="form-control" data-rooms-url="@Url.Action("HotelRooms", "Reservations")">
+            <option value="">Select a hotel...</option>
+        </select>
+        <span asp-validation-for="HotelId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RoomId"></label>
+        <select asp-for="RoomId" asp-items='@(new SelectList(ViewBag.Rooms, "Id", "RoomNumber", Model.RoomId))' class="form-control" id="room-selection"></select>
+        <span asp-validation-for="RoomId" class="text-danger"></span>
+    </div>
+    <div class="form-group full-span">
+        <label>Services</label>
+        <div class="checkbox-list">
+            @foreach (var service in ViewBag.Services as List<Service> ?? new List<Service>())
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="SelectedServiceIds" value="@service.Id" id="service-@service.Id" @(Model.SelectedServiceIds.Contains(service.Id) ? "checked" : string.Empty) />
+                    <label class="form-check-label" for="service-@service.Id">@service.Name</label>
+                </div>
+            }
+        </div>
+        <span asp-validation-for="SelectedServiceIds" class="text-danger"></span>
+    </div>
+</div>

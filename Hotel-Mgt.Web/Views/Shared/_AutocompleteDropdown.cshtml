@@ -1,0 +1,11 @@
+@model AutocompleteDropdownModel
+
+<div class="form-group autocomplete-dropdown" data-search-url="@Model.SearchUrl" data-hidden-selector="input[name='@Model.HiddenName']">
+    <label for="@Model.InputId">@Model.Label</label>
+    <div class="autocomplete-wrapper">
+        <input id="@Model.InputId" type="text" class="form-control" value="@Model.SelectedText" placeholder="@Model.Placeholder" autocomplete="off" />
+        <input type="hidden" name="@Model.HiddenName" value="@Model.SelectedId" />
+    </div>
+    <div class="autocomplete-results"></div>
+    <span class="text-danger field-validation-valid" data-valmsg-for="@Model.HiddenName" data-valmsg-replace="true"></span>
+</div>

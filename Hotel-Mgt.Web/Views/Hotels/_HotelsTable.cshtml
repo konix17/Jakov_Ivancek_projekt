@@ -1,0 +1,33 @@
+@model IEnumerable<Hotel>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>City</th>
+            <th>Rating</th>
+            <th>Phone</th>
+            <th>Rooms</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hotel in Model)
+        {
+            <tr>
+                <td>@hotel.Name</td>
+                <td>@hotel.City</td>
+                <td>@hotel.Rating</td>
+                <td>@hotel.PhoneNumber</td>
+                <td>@hotel.Rooms.Count</td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="btn btn-secondary" asp-controller="Hotels" asp-action="Details" asp-route-id="@hotel.Id">Details</a>
+                        <a class="btn btn-primary" asp-controller="Hotels" asp-action="Edit" asp-route-id="@hotel.Id">Edit</a>
+                        <a class="btn btn-danger" asp-controller="Hotels" asp-action="Delete" asp-route-id="@hotel.Id">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

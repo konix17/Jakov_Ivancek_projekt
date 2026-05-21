@@ -1,0 +1,33 @@
+@model IEnumerable<Payment>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Reservation</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var payment in Model)
+        {
+            <tr>
+                <td>@payment.Amount€</td>
+                <td>@payment.PaymentDate.ToString("dd.MM.yyyy.")</td>
+                <td>@payment.PaymentMethod</td>
+                <td><span class="badge @(payment.IsPaid ? "badge-success" : "badge-warning")">@(payment.IsPaid ? "Paid" : "Pending")</span></td>
+                <td>@payment.Reservation?.ReservationCode</td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="btn btn-secondary" asp-controller="Payments" asp-action="Details" asp-route-id="@payment.Id">Details</a>
+                        <a class="btn btn-primary" asp-controller="Payments" asp-action="Edit" asp-route-id="@payment.Id">Edit</a>
+                        <a class="btn btn-danger" asp-controller="Payments" asp-action="Delete" asp-route-id="@payment.Id">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

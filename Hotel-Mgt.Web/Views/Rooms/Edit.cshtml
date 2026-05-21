@@ -1,0 +1,29 @@
+@model RoomFormModel
+
+@{
+    ViewData["Title"] = "Edit Room";
+    ViewData["Description"] = "Update room details.";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <a asp-controller="Rooms" asp-action="Index">Rooms</a>
+        <span class="sep">/</span>
+        <span class="current">Edit</span>
+    </nav>
+}
+
+<div class="panel-card">
+    <h2>Edit Room</h2>
+    <form asp-action="Edit" method="post" novalidate>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        @await Html.PartialAsync("_RoomForm", Model)
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>

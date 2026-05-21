@@ -1,0 +1,29 @@
+@model IEnumerable<Reservation>
+
+@{
+    ViewData["Title"] = "Reservations";
+    ViewData["Description"] = "Booking records, status and relation to guests and rooms.";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="sep">/</span>
+        <span class="current">Reservations</span>
+    </nav>
+}
+
+<div class="panel-card">
+    <div class="section-header">
+        <h2>Reservation log</h2>
+        <div class="action-toolbar">
+            <form class="ajax-search-form" asp-action="Search" asp-controller="Reservations" data-target="#reservations-results">
+                <input type="search" name="q" value="@(ViewData["SearchTerm"] ?? string.Empty)" class="form-control search-input" placeholder="Search reservations..." />
+            </form>
+            <a class="btn btn-primary" asp-controller="Reservations" asp-action="Create">New Reservation</a>
+        </div>
+    </div>
+    <div id="reservations-results">
+        @await Html.PartialAsync("_ReservationsTable", Model)
+    </div>
+</div>
