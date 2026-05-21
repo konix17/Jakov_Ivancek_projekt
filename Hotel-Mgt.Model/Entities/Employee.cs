@@ -20,4 +20,13 @@ public class Employee
     [ForeignKey("Hotel")]
     public int HotelId { get; set; }
     public virtual Hotel Hotel { get; set; }
+    
+    public Employee()
+    {
+        FirstName = null!;
+        LastName = null!;
+        Email = null!;
+        PhoneNumber = null!;
+        Hotel = null!;
+    }
 }

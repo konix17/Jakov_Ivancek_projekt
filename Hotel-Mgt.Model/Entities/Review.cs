@@ -19,4 +19,11 @@ public class Review
     [ForeignKey("Hotel")]
     public int HotelId { get; set; }
     public virtual Hotel Hotel { get; set; }
+
+    public Review()
+    {
+        Comment = null!;
+        Guest = null!;
+        Hotel = null!;
+    }
 }

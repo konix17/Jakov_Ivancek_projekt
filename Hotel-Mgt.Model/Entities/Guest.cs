@@ -22,5 +22,11 @@ public class Guest
     {
         Reservations = new List<Reservation>();
         Reviews = new List<Review>();
+
+        FirstName = null!;
+        LastName = null!;
+        Email = null!;
+        PhoneNumber = null!;
+        DocumentNumber = null!;
     }
 }

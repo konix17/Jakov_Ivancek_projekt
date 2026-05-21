@@ -21,5 +21,8 @@ public class Service
     public Service()
     {
         Reservations = new List<Reservation>();
+        Name = null!;
+        Description = null!;
+        Hotel = null!;
     }
 }

@@ -26,5 +26,9 @@ public class Hotel
         Services = new List<Service>();
         Reservations = new List<Reservation>();
         Reviews = new List<Review>();
+        Name = null!;
+        Address = null!;
+        City = null!;
+        PhoneNumber = null!;
     }
 }

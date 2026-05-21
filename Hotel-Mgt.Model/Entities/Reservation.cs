@@ -32,5 +32,8 @@ public class Reservation
     {
         Services = new List<Service>();
         Payments = new List<Payment>();
+        ReservationCode = null!;
+        Guest = null!;
+        Room = null!;
     }
 }

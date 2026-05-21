@@ -24,5 +24,7 @@ public class Room
     public Room()
     {
         Reservations = new List<Reservation>();
+        RoomNumber = null!;
+        Hotel = null!;
     }
 }

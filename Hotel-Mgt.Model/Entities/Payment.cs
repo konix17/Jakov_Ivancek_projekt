@@ -17,4 +17,9 @@ public class Payment
     [ForeignKey("Reservation")]
     public int ReservationId { get; set; }
     public virtual Reservation Reservation { get; set; }
+
+    public Payment()
+    {
+        Reservation = null!;
+    }
 }
