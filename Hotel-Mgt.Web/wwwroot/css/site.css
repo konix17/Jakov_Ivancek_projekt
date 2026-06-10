@@ -119,6 +119,48 @@ textarea {
   border-color: var(--border-strong);
 }
 
+.page-topbar {
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeInMove 0.4s ease forwards;
+}
+
+.page-content {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeInMove 0.45s ease 0.08s forwards;
+}
+
+.save-spinner {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  margin-right: 0.55rem;
+  vertical-align: middle;
+  animation: spin 0.75s linear infinite;
+}
+
+button.saving,
+input.saving {
+  cursor: wait;
+}
+
+@keyframes fadeInMove {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .sidebar-footer {
   margin-top: auto;
   padding-top: 1.5rem;
@@ -612,10 +654,17 @@ textarea {
   border: 1px solid var(--border-soft);
 }
 
-.flatpickr-weekdays {
-  background: var(--bg-surface);
-  color: var(--text-faint);
+.flatpickr-current-month span,
+.flatpickr-month span {
+  color: var(--text-primary) !important;
 }
+
+.flatpickr-weekdays,
+.flatpickr-weekday,
+span.flatpickr-weekday {
+  color: #ffffff !important;
+}
+
 
 .flatpickr-weeks {
   background: var(--bg-surface);

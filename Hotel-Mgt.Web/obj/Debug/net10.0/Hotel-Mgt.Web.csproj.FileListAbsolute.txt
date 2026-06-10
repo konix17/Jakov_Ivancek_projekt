@@ -193,5 +193,5 @@
 /Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/HotelMgt.Web.pdb
 /Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/Hotel-Mgt.Web.genruntimeconfig.cache
 /Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/ref/HotelMgt.Web.dll
-/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/compressed/wsi3kad4cp-{0}-5si3tx4j30-5si3tx4j30.gz
-/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/compressed/mn7wjvp2qr-{0}-jq4ygvmire-jq4ygvmire.gz
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/compressed/wsi3kad4cp-{0}-rnvps1yav7-rnvps1yav7.gz
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/compressed/mn7wjvp2qr-{0}-ul5haamh5k-ul5haamh5k.gz

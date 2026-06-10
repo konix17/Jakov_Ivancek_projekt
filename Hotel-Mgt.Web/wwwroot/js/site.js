@@ -116,6 +116,35 @@ function bindAjaxSearchForms() {
     });
 }
 
+function bindSaveAnimations() {
+    $("form").on("submit", function () {
+        const form = $(this);
+        if (form.data("save-animated")) {
+            return;
+        }
+
+        if (typeof form.valid === "function" && !form.valid()) {
+            return;
+        }
+
+        const button = form.find("button[type='submit'], input[type='submit']").filter(":visible").first();
+        if (!button.length) {
+            return;
+        }
+
+        form.data("save-animated", true);
+        button.prop("disabled", true).addClass("saving");
+
+        if (button.is("button")) {
+            button.data("orig-text", button.html());
+            button.html("<span class=\"save-spinner\"></span>Saving...");
+        } else {
+            button.data("orig-text", button.val());
+            button.val("Saving...");
+        }
+    });
+}
+
 function bindHotelRoomFilters() {
     $("select[data-rooms-url]").each(function () {
         const hotelSelect = $(this);
@@ -197,5 +226,6 @@ $(function () {
     bindAutocompleteWidgets();
     bindHotelRoomFilters();
     bindAjaxSearchForms();
+    bindSaveAnimations();
     initializeDateTimePickers();
 });

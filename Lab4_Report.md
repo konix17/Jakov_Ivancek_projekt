@@ -7,13 +7,14 @@
   - Implemented CRUD actions in controllers for `Hotel`, `Room`, `Service`, `Employee`, `Guest`, `Reservation`, `Payment`, and `Review`.
   - Added or completed repository methods in `Hotel-Mgt.Web/Repositories/IHotelRepository.cs` and `Hotel-Mgt.Web/Repositories/EfHotelRepository.cs`.
 - Where it is:
-  - Controllers: `Hotel-Mgt.Web/Controllers/*.cs`
+  - Controllers: `Hotel-Mgt.Web/Controllers/HotelsController.cs`, `Hotel-Mgt.Web/Controllers/RoomsController.cs`, `Hotel-Mgt.Web/Controllers/ServicesController.cs`, `Hotel-Mgt.Web/Controllers/EmployeesController.cs`, `Hotel-Mgt.Web/Controllers/GuestsController.cs`, `Hotel-Mgt.Web/Controllers/ReservationsController.cs`, `Hotel-Mgt.Web/Controllers/PaymentsController.cs`, `Hotel-Mgt.Web/Controllers/ReviewsController.cs`
   - Repository interface: `Hotel-Mgt.Web/Repositories/IHotelRepository.cs`
   - Repository implementation: `Hotel-Mgt.Web/Repositories/EfHotelRepository.cs`
 - How it works:
-  - Each controller has `Index`, `Create`, `Edit`, `Delete`, and `Details` actions.
-  - GET actions load lookup data and pass models to views.
-  - POST actions validate `ModelState`, save changes, and redirect back to `Index`.
+  - Each controller implements `Index`, `Create`, `Edit`, `Delete`, and `Details` routes for the entity.
+  - `Create` and `Edit` POST actions always check `ModelState.IsValid` and return the same view when invalid.
+  - Repository methods such as `AddEmployee`, `UpdateEmployee`, `DeleteEmployee`, and `SaveChanges` persist changes through EF Core.
+  - Search-enabled `Index` pages use repository query methods so the same code path works for full page load and AJAX list updates.
 
 ### 2. Kreiranje padajućeg izbornika s AJAX autocomplete opcijom pretrage
 - What I did:
@@ -21,12 +22,14 @@
   - Added autocomplete endpoints on controllers and client-side AJAX code.
 - Where it is:
   - Partial view: `Hotel-Mgt.Web/Views/Shared/_AutocompleteDropdown.cshtml`
+  - Autocomplete model: `Hotel-Mgt.Web/Models/UiModels.cs`
   - JS helper: `Hotel-Mgt.Web/wwwroot/js/site.js`
-  - Autocomplete endpoints: `Hotel-Mgt.Web/Controllers/GuestsController.cs`, `RoomsController.cs`, `ServicesController.cs`, `EmployeesController.cs`, `ReviewsController.cs`, `ReservationsController.cs`
+  - Autocomplete endpoints: `Hotel-Mgt.Web/Controllers/HotelsController.cs`, `Hotel-Mgt.Web/Controllers/RoomsController.cs`, `Hotel-Mgt.Web/Controllers/ServicesController.cs`, `Hotel-Mgt.Web/Controllers/EmployeesController.cs`, `Hotel-Mgt.Web/Controllers/GuestsController.cs`, `Hotel-Mgt.Web/Controllers/ReservationsController.cs`, `Hotel-Mgt.Web/Controllers/PaymentsController.cs`, `Hotel-Mgt.Web/Controllers/ReviewsController.cs`
 - How it works:
-  - User types in the autocomplete input and the JS sends `GET` to the controller endpoint.
-  - The controller returns JSON result items with `id`, `text`, and metadata.
-  - JS renders suggestion items and stores the selected ID in a hidden input.
+  - `_AutocompleteDropdown.cshtml` renders a visible text input, hidden ID input, results container and validation span.
+  - `site.js` initializes each `.autocomplete-dropdown`, debounces user typing, calls the controller endpoint, and fills the dropdown.
+  - Controller autocomplete endpoints return JSON objects like `{ id, text, meta }` based on search term.
+  - When the user picks an item, the JS sets the text and hidden ID so the form submits the selected foreign key.
 
 ### 3. Implementacija validacije (client side + server side)
 - What I did:
@@ -36,12 +39,14 @@
   - Controllers validate `ModelState` in POST actions.
 - Where it is:
   - Form models: `Hotel-Mgt.Web/Models/FormModels.cs`
-  - Views: `Hotel-Mgt.Web/Views/*/*Form.cshtml`, `Hotel-Mgt.Web/Views/Shared/_DateTimePicker.cshtml`, and `Hotel-Mgt.Web/Views/Shared/_ValidationScriptsPartial.cshtml`
+  - Form views: `Hotel-Mgt.Web/Views/Employees/_EmployeeForm.cshtml`, `Hotel-Mgt.Web/Views/Rooms/_RoomForm.cshtml`, `Hotel-Mgt.Web/Views/Services/_ServiceForm.cshtml`, `Hotel-Mgt.Web/Views/Guests/_GuestForm.cshtml`, `Hotel-Mgt.Web/Views/Reservations/_ReservationForm.cshtml`, `Hotel-Mgt.Web/Views/Payments/_PaymentForm.cshtml`, `Hotel-Mgt.Web/Views/Reviews/_ReviewForm.cshtml`
+  - Shared validation and picker views: `Hotel-Mgt.Web/Views/Shared/_DateTimePicker.cshtml`, `Hotel-Mgt.Web/Views/Shared/_AutocompleteDropdown.cshtml`, `Hotel-Mgt.Web/Views/Shared/_ValidationScriptsPartial.cshtml`
   - Layout: `Hotel-Mgt.Web/Views/Shared/_Layout.cshtml`
 - How it works:
-  - Client-side validation is driven by unobtrusive validation attributes rendered by Razor helpers and explicit `data-val` markup.
-  - The custom date picker also triggers validation on `blur` and on closing the Flatpickr popup via `input.valid()` in `wwwroot/js/site.js`.
-  - Server-side validation runs in POST actions using `ModelState.IsValid`; invalid models are re-rendered with error messages.
+  - Form models in `Hotel-Mgt.Web/Models/FormModels.cs` define fields with data annotations such as `[Required]`, `[StringLength]`, `[Range]`, `[EmailAddress]`, and `[Phone]`.
+  - Views use `asp-for` and `asp-validation-for` to render inputs and validation spans.
+  - `_ValidationScriptsPartial.cshtml` loads jQuery Validation and unobtrusive validation scripts from shared layout.
+  - Controller POST actions in entity controllers always check `ModelState.IsValid`, repopulate lookup data via `ViewBag` when invalid, and return the view so validation messages are displayed.
 
 ### 4. Napredno korištenje JavaScripta
 - What I did:
@@ -52,13 +57,23 @@
   - Added client-side validation triggers and fade-in animations for dynamic content.
 - Where it is:
   - JavaScript: `Hotel-Mgt.Web/wwwroot/js/site.js`
-  - AJAX-enabled index page forms: `Hotel-Mgt.Web/Views/*/Index.cshtml`
+  - AJAX-enabled index page forms: `Hotel-Mgt.Web/Views/Employees/Index.cshtml`, `Hotel-Mgt.Web/Views/Payments/Index.cshtml`, `Hotel-Mgt.Web/Views/Rooms/Index.cshtml`, `Hotel-Mgt.Web/Views/Guests/Index.cshtml`, `Hotel-Mgt.Web/Views/Reservations/Index.cshtml`, `Hotel-Mgt.Web/Views/Reviews/Index.cshtml`, `Hotel-Mgt.Web/Views/Hotels/Index.cshtml`, `Hotel-Mgt.Web/Views/Services/Index.cshtml`
   - Reservation hotel/room filtering: `Hotel-Mgt.Web/Views/Reservations/_ReservationForm.cshtml`
 - How it works:
-  - Search forms submit via AJAX when the user stops typing, updating partial views without full reload.
-  - Autocomplete opens suggestions on focus and fetches matching items from the server.
-  - Hotel selection triggers an AJAX request to `ReservationsController.HotelRooms`, then repopulates the room dropdown.
-  - Dynamic partials and list updates animate with `.fadeIn(250)` in `site.js` so content appears smoothly.
+  - `Hotel-Mgt.Web/wwwroot/js/site.js` contains helper functions: `debounce`, `bindAjaxSearchForms`, `bindAutocompleteWidgets`, `bindHotelRoomFilters`, and `initializeDateTimePickers`.
+  - `bindAjaxSearchForms` attaches debounced input listeners to `.ajax-search-form`, submits queries to controller `Search` actions, and replaces target partial HTML.
+  - `bindHotelRoomFilters` loads rooms dynamically from `ReservationsController.HotelRooms` when the hotel select changes.
+  - `bindAutocompleteWidgets` sets up the custom autocomplete dropdown behavior for all forms.
+  - `initializeDateTimePickers` applies Flatpickr configuration for date controls and triggers validation after close/blur.
+
+#### AJAX loading chunks
+- The AJAX flow has three connected pieces:
+  1. the search form in the view (`Hotel-Mgt.Web/Views/Employees/Index.cshtml` and equivalent list views),
+  2. the controller `Search` action (`Hotel-Mgt.Web/Controllers/EmployeesController.cs` and equivalent controllers),
+  3. the shared AJAX submit handler in `Hotel-Mgt.Web/wwwroot/js/site.js`.
+- The view uses `class="ajax-search-form"` and `data-target` to mark the form and the HTML container to update.
+- The controller returns a partial view (`_EmployeesTable` for employees) instead of a full page.
+- The JS sends the query in the background, receives HTML, and injects it into the target container without reloading the page.
 
 ### 5. Datumska kontrola (partial view)
 - What I did:
@@ -68,14 +83,14 @@
 - Where it is:
   - Partial view: `Hotel-Mgt.Web/Views/Shared/_DateTimePicker.cshtml`
   - JS logic: `Hotel-Mgt.Web/wwwroot/js/site.js`
-  - Review and payment forms: `Hotel-Mgt.Web/Views/Reviews/_ReviewForm.cshtml` and `Hotel-Mgt.Web/Views/Payments/_PaymentForm.cshtml`
+  - Form views using the picker: `Hotel-Mgt.Web/Views/Employees/_EmployeeForm.cshtml`, `Hotel-Mgt.Web/Views/Guests/_GuestForm.cshtml`, `Hotel-Mgt.Web/Views/Reservations/_ReservationForm.cshtml`, `Hotel-Mgt.Web/Views/Payments/_PaymentForm.cshtml`, `Hotel-Mgt.Web/Views/Reviews/_ReviewForm.cshtml`
 - How it works:
-  - The partial renders a text input plus a popup calendar.
-  - JS parses and formats dates in `dd.MM.yyyy.` style, supporting browser locale parsing.
-  - The picker writes the selected date back to the form input and triggers validation on `blur`.
-  - Review/payment creation now uses `DateTime.Today` in controller POST actions, while edit forms still allow manual date adjustment.
+  - `_DateTimePicker.cshtml` renders a text input with class `flatpickr-datetime`, `data-val` validation metadata, and a validation message span so the field works with unobtrusive client validation.
+  - `site.js` detects all `.flatpickr-datetime` inputs, initializes Flatpickr with locale detection for `hr` or `en`, and sets a custom format instead of native browser date controls.
+  - On `blur` and on Flatpickr `onClose`, the script calls `input.valid()` to trigger client validation immediately.
+  - The partial is reused on employee hire date, reservation dates, payment date, review date, and other date fields across the app.
+  - This ensures date selection works consistently in HR and EN formats and does not depend on browser-native `<input type="date">` behavior.
 
-## Additional details
 - Reservation-specific improvements:
   - Added `HotelId` to `ReservationFormModel` and filtered `RoomId` options by selected hotel.
   - Updated `Hotel-Mgt.Web/Views/Reservations/Details.cshtml` to show hotel name and correct payments/services counts.
