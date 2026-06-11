@@ -195,3 +195,8 @@
 /Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/ref/HotelMgt.Web.dll
 /Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/compressed/wsi3kad4cp-{0}-rnvps1yav7-rnvps1yav7.gz
 /Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/compressed/mn7wjvp2qr-{0}-ul5haamh5k-ul5haamh5k.gz
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/bin/Debug/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.Facebook.dll
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.Google.dll
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/compressed/r3iokchfo9-{0}-bbis3evy0n-bbis3evy0n.gz
+/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/obj/Debug/net10.0/compressed/h86e7egifx-{0}-bbis3evy0n-bbis3evy0n.gz

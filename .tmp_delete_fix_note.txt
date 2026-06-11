@@ -1,0 +1,1 @@
+Delete fix applied: added [ValidateAntiForgeryToken] and updated AJAX delete POST to send antiforgery token in the expected format.

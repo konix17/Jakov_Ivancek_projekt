@@ -1,6 +1,10 @@
 ﻿@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var isAuthenticated = User?.Identity?.IsAuthenticated == true;
+    var isAdmin = isAuthenticated && User != null && User.IsInRole("Admin");
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,6 +56,25 @@
                 </div>
                 <div class="breadcrumb-shell">
                     @RenderSection("Breadcrumbs", required: false)
+                    <div class="d-flex gap-2 flex-wrap mt-2 align-items-center">
+                        @if (isAuthenticated)
+                        {
+                            <span class="badge bg-dark-subtle text-dark">Signed in as @(isAdmin ? "Admin" : "User")</span>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
+                            </form>
+                            @if (isAdmin)
+                            {
+                                <a class="btn btn-secondary btn-sm" asp-controller="Setup" asp-action="Index">Setup</a>
+                            }
+                        }
+                        else
+                        {
+                            <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Login">Login</a>
+                            <a class="btn btn-secondary btn-sm" asp-controller="Account" asp-action="Register">Register</a>
+                        }
+                    </div>
                 </div>
             </header>
 

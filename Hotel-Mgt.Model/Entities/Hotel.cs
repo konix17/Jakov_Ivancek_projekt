@@ -18,6 +18,7 @@ public class Hotel
     public virtual ICollection<Service> Services { get; set; }
     public virtual ICollection<Reservation> Reservations { get; set; }
     public virtual ICollection<Review> Reviews { get; set; }
+    public virtual ICollection<Attachment> Attachments { get; set; }
 
     public Hotel()
     {
@@ -26,6 +27,7 @@ public class Hotel
         Services = new List<Service>();
         Reservations = new List<Reservation>();
         Reviews = new List<Review>();
+        Attachments = new List<Attachment>();
         Name = null!;
         Address = null!;
         City = null!;

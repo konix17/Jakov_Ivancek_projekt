@@ -1,9 +1,10 @@
 using HotelMgt.Model.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelMgt.Model;
 
-public class HotelDbContext : DbContext
+public class HotelDbContext : IdentityDbContext<AppUser>
 {
     public HotelDbContext(DbContextOptions<HotelDbContext> options)
         : base(options)
@@ -18,6 +19,7 @@ public class HotelDbContext : DbContext
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<Attachment> Attachments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -69,6 +71,12 @@ public class HotelDbContext : DbContext
             .HasOne(r => r.Hotel)
             .WithMany(h => h.Reviews)
             .HasForeignKey(r => r.HotelId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Attachment>()
+            .HasOne(a => a.Hotel)
+            .WithMany(h => h.Attachments)
+            .HasForeignKey(a => a.HotelId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Reservation>()

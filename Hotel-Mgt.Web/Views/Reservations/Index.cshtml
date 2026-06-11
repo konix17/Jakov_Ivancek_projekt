@@ -1,6 +1,9 @@
 @model IEnumerable<Reservation>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<HotelMgt.Model.Entities.AppUser> SignInManager
 
 @{
+    var isAdmin = SignInManager.IsSignedIn(User) && User.IsInRole("Admin");
     ViewData["Title"] = "Reservations";
     ViewData["Description"] = "Booking records, status and relation to guests and rooms.";
 }
@@ -20,7 +23,10 @@
             <form class="ajax-search-form" asp-action="Search" asp-controller="Reservations" data-target="#reservations-results">
                 <input type="search" name="q" value="@(ViewData["SearchTerm"] ?? string.Empty)" class="form-control search-input" placeholder="Search reservations..." />
             </form>
-            <a class="btn btn-primary" asp-controller="Reservations" asp-action="Create">New Reservation</a>
+            @if (isAdmin)
+            {
+                <a class="btn btn-primary" asp-controller="Reservations" asp-action="Create">New Reservation</a>
+            }
         </div>
     </div>
     <div id="reservations-results">

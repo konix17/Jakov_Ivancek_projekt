@@ -1,6 +1,7 @@
 using HotelMgt.Model.Entities;
 using HotelMgt.Web.Models;
 using HotelMgt.Web.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -39,6 +40,7 @@ public class EmployeesController : Controller
         return Json(results);
     }
 
+    [Authorize(Roles = "Admin")]
     [Route("create")]
     public IActionResult Create()
     {
@@ -47,6 +49,7 @@ public class EmployeesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [Route("create")]
     public IActionResult Create(EmployeeFormModel model)
     {
@@ -73,6 +76,7 @@ public class EmployeesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
     public IActionResult Edit(int id)
     {
@@ -87,6 +91,7 @@ public class EmployeesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
     public IActionResult Edit(int id, EmployeeFormModel model)
     {
@@ -108,6 +113,7 @@ public class EmployeesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     [Route("delete/{id:int}")]
     public IActionResult Delete(int id)
     {
@@ -121,6 +127,7 @@ public class EmployeesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ActionName("Delete")]
     [Route("delete/{id:int}")]
     public IActionResult DeleteConfirmed(int id)
@@ -130,6 +137,7 @@ public class EmployeesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [AllowAnonymous]
     [Route("{id:int}")]
     public IActionResult Details(int id)
     {

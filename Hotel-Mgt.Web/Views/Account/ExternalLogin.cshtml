@@ -1,0 +1,32 @@
+@model HotelMgt.Web.Models.ExternalLoginViewModel
+@{
+    ViewData["Title"] = "Complete Your Registration";
+    ViewData["Description"] = "Please provide additional details to finish setting up your account.";
+}
+
+<div class="panel-card">
+    <h2>Almost there...</h2>
+    <p class="text-muted">You've successfully authenticated with your external provider. Please enter your OIB to complete the registration.</p>
+
+    <form asp-action="ExternalLoginConfirmation" method="post" class="form-grid">
+        <div asp-validation-summary="ModelOnly" class="text-danger full-span"></div>
+
+        <div class="form-group full-span">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" readonly />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group full-span">
+            <label asp-for="OIB"></label>
+            <input asp-for="OIB" class="form-control" />
+            <span asp-validation-for="OIB" class="text-danger"></span>
+        </div>
+
+        <input asp-for="ReturnUrl" type="hidden" />
+
+        <div class="form-actions full-span">
+            <button type="submit" class="btn btn-primary">Complete Registration</button>
+        </div>
+    </form>
+</div>

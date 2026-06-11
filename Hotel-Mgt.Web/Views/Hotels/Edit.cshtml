@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit Hotel";
-    ViewData["Description"] = "Update hotel details.";
+    ViewData["Description"] = "Update hotel details and manage attachments.";
 }
 
 @section Breadcrumbs {
@@ -14,6 +14,38 @@
         <span class="current">Edit</span>
     </nav>
 }
+
+<style>
+    /* Custom Dropzone styling to match modern premium design */
+    .dropzone-custom {
+        border: 2px dashed #0056b3;
+        border-radius: 8px;
+        background: #f8faff;
+        padding: 40px;
+        text-align: center;
+        color: #0056b3;
+        transition: background 0.3s, border-color 0.3s;
+        cursor: pointer;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+
+    .dropzone-custom:hover, .dropzone-custom.dz-drag-hover {
+        background: #eef3ff;
+        border-color: #004494;
+    }
+
+    .dropzone-custom .dz-message {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .attachment-section {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eaeaea;
+    }
+</style>
 
 <div class="panel-card">
     <h2>Edit Hotel</h2>
@@ -27,3 +59,74 @@
         </div>
     </form>
 </div>
+
+<div class="panel-card mt-4">
+    <div class="attachment-section">
+        <h3>Manage Attachments</h3>
+        <p class="text-muted">Upload photos, documents, and other resources related to this hotel.</p>
+        
+        <form action="/api/hotels/@Model.Id/attachments" class="dropzone dropzone-custom" id="hotel-dropzone">
+            <div class="dz-message" data-dz-message>
+                <span>Drop files here or click to upload</span>
+            </div>
+        </form>
+
+        <div id="attachments-container" class="mt-4">
+            <!-- Attachments will be loaded here via AJAX -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+
+    <script>
+        // Disable auto-discovery to prevent Dropzone from attaching twice
+        Dropzone.autoDiscover = false;
+
+        function loadAttachments() {
+            $.get('@Url.Action("GetAttachments", "Hotels", new { id = Model.Id })', function(data) {
+                $('#attachments-container').html(data);
+            });
+        }
+
+        function deleteAttachment(attachmentId) {
+            if (confirm('Are you sure you want to delete this attachment?')) {
+                $.ajax({
+                    url: '/api/hotels/@Model.Id/attachments/' + attachmentId,
+                    type: 'DELETE',
+                    success: function() {
+                        loadAttachments();
+                    },
+                    error: function() {
+                        alert('Failed to delete attachment.');
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function() {
+            // Load initial attachments
+            loadAttachments();
+
+            // Initialize Dropzone
+            var myDropzone = new Dropzone("#hotel-dropzone", {
+                url: "/api/hotels/@Model.Id/attachments",
+                maxFilesize: 10, // MB
+                acceptedFiles: "image/*,application/pdf,.doc,.docx",
+                dictDefaultMessage: "Drop files here or click to upload",
+                success: function(file, response) {
+                    // Refresh attachments list on success
+                    loadAttachments();
+                },
+                complete: function(file) {
+                    // Remove file from dropzone area after uploading
+                    setTimeout(function() {
+                        myDropzone.removeFile(file);
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+}

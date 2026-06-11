@@ -1,6 +1,9 @@
 @model IEnumerable<Payment>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<HotelMgt.Model.Entities.AppUser> SignInManager
 
 @{
+    var isAdmin = SignInManager.IsSignedIn(User) && User.IsInRole("Admin");
     ViewData["Title"] = "Payments";
     ViewData["Description"] = "Payment transactions and settlement status.";
 }
@@ -20,7 +23,10 @@
             <form class="ajax-search-form" asp-action="Search" asp-controller="Payments" data-target="#payments-results">
                 <input type="search" name="q" value="@(ViewData["SearchTerm"] ?? string.Empty)" class="form-control search-input" placeholder="Search payments..." />
             </form>
-            <a class="btn btn-primary" asp-controller="Payments" asp-action="Create">New Payment</a>
+            @if (isAdmin)
+            {
+                <a class="btn btn-primary" asp-controller="Payments" asp-action="Create">New Payment</a>
+            }
         </div>
     </div>
     <div id="payments-results">

@@ -1,0 +1,43 @@
+@model IEnumerable<HotelMgt.Model.Entities.Attachment>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<HotelMgt.Model.Entities.AppUser> SignInManager
+
+@{
+    var isAdmin = SignInManager.IsSignedIn(User) && User.IsInRole("Admin");
+}
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No files uploaded for this hotel yet.</p>
+}
+else
+{
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Uploaded</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><a href="@item.FilePath" target="_blank">@item.FileName</a></td>
+                    <td>@item.ContentType</td>
+                    <td>@((item.FileSize / 1024.0).ToString("0.## KB"))</td>
+                    <td>@item.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        @if (isAdmin)
+                        {
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteAttachment(@item.Id)">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

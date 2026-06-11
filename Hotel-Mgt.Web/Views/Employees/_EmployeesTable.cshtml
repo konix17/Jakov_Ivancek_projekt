@@ -1,4 +1,10 @@
 @model IEnumerable<Employee>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<HotelMgt.Model.Entities.AppUser> SignInManager
+
+@{
+    var isAdmin = SignInManager.IsSignedIn(User) && User.IsInRole("Admin");
+}
 
 <table class="data-table">
     <thead>
@@ -21,8 +27,11 @@
                 <td>
                     <div class="action-buttons">
                         <a class="btn btn-secondary" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">Details</a>
-                        <a class="btn btn-primary" asp-controller="Employees" asp-action="Edit" asp-route-id="@employee.Id">Edit</a>
-                        <a class="btn btn-danger" asp-controller="Employees" asp-action="Delete" asp-route-id="@employee.Id">Delete</a>
+                        @if (isAdmin)
+                        {
+                            <a class="btn btn-primary" asp-controller="Employees" asp-action="Edit" asp-route-id="@employee.Id">Edit</a>
+                            <a class="btn btn-danger" asp-controller="Employees" asp-action="Delete" asp-route-id="@employee.Id">Delete</a>
+                        }
                     </div>
                 </td>
             </tr>

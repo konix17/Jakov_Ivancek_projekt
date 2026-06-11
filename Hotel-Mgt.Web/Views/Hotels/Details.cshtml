@@ -1,6 +1,9 @@
 @model Hotel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<HotelMgt.Model.Entities.AppUser> SignInManager
 
 @{
+    var isAdmin = SignInManager.IsSignedIn(User) && User.IsInRole("Admin");
     ViewData["Title"] = "Hotel Details";
     ViewData["Description"] = Model.Name;
 }
@@ -35,6 +38,11 @@
     </div>
 
     <aside class="panel-card">
+        @if (TempData["AttachmentMessage"] is string message)
+        {
+            <div class="alert alert-success">@message</div>
+        }
+
         <div class="stat-block">
             <strong>@(Model.Rooms?.Count ?? 0)</strong>
             <span>Rooms</span>
@@ -54,3 +62,61 @@
         <a class="btn btn-secondary" asp-controller="Hotels" asp-action="Index">Back to Hotels</a>
     </aside>
 </div>
+
+<div id="attachmentAntiForgery" style="display:none;">@Html.AntiForgeryToken()</div>
+
+<div class="panel-card">
+    <div class="section-header">
+        <h2>Hotel documents</h2>
+        @if (isAdmin)
+        {
+            <form asp-action="UploadAttachment" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="d-flex gap-2 flex-wrap align-items-center">
+                <input type="file" name="file" class="form-control" />
+                <button type="submit" class="btn btn-primary">Upload file</button>
+            </form>
+        }
+    </div>
+    <div id="attachmentList"></div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadAttachments() {
+            fetch('@Url.Action("GetAttachments", "Hotels", new { id = Model.Id })')
+                .then(r => r.text())
+                .then(html => document.getElementById('attachmentList').innerHTML = html);
+        }
+
+        function deleteAttachment(id) {
+            if (!confirm('Delete this file?')) return;
+
+            const url = '/Hotels/@Model.Id/attachments/' + id + '/delete';
+            const token = document.querySelector('#attachmentAntiForgery input[name="__RequestVerificationToken"]').value;
+
+            fetch(url, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'RequestVerificationToken': token,
+                    'X-CSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({ __RequestVerificationToken: token }).toString()
+            })
+                .then(async response => {
+                    if (!response.ok) {
+                        throw new Error('Delete request failed.');
+                    }
+
+                    await loadAttachments();
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('The file could not be deleted. Please try again.');
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAttachments);
+    </script>
+}

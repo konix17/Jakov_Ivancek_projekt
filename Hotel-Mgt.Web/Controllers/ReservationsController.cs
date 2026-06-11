@@ -1,6 +1,7 @@
 using HotelMgt.Model.Entities;
 using HotelMgt.Web.Models;
 using HotelMgt.Web.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -47,6 +48,7 @@ public class ReservationsController : Controller
         ViewBag.Rooms = model.HotelId > 0 ? _repository.GetRoomsByHotel(model.HotelId) : new List<Room>();
     }
 
+    [Authorize(Roles = "Admin")]
     [Route("create")]
     public IActionResult Create()
     {
@@ -56,6 +58,7 @@ public class ReservationsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [Route("create")]
     public IActionResult Create(ReservationFormModel model)
     {
@@ -84,6 +87,7 @@ public class ReservationsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
     public IActionResult Edit(int id)
     {
@@ -99,6 +103,7 @@ public class ReservationsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
     public IActionResult Edit(int id, ReservationFormModel model)
     {
@@ -145,6 +150,7 @@ public class ReservationsController : Controller
         return Json(rooms);
     }
 
+    [Authorize(Roles = "Admin")]
     [Route("delete/{id:int}")]
     public IActionResult Delete(int id)
     {
@@ -158,6 +164,7 @@ public class ReservationsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ActionName("Delete")]
     [Route("delete/{id:int}")]
     public IActionResult DeleteConfirmed(int id)
@@ -167,6 +174,7 @@ public class ReservationsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [AllowAnonymous]
     [Route("{id:int}")]
     public IActionResult Details(int id)
     {
