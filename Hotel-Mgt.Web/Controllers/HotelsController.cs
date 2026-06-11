@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace HotelMgt.Web.Controllers;
 
@@ -13,36 +15,34 @@ namespace HotelMgt.Web.Controllers;
 public class HotelsController : Controller
 {
     private readonly IHotelRepository _repository;
-    private readonly HotelDbContext _context;
-    private readonly IWebHostEnvironment _environment;
+    private readonly HotelMgt.Web.Services.IAttachmentService _attachmentService;
 
-    public HotelsController(IHotelRepository repository, HotelDbContext context, IWebHostEnvironment environment)
+    public HotelsController(IHotelRepository repository, HotelMgt.Web.Services.IAttachmentService attachmentService)
     {
         _repository = repository;
-        _context = context;
-        _environment = environment;
+        _attachmentService = attachmentService;
     }
 
     [Route("")]
-    public IActionResult Index(string q)
+    public async Task<IActionResult> Index(string q)
     {
         ViewData["SearchTerm"] = q;
-        var hotels = string.IsNullOrWhiteSpace(q) ? _repository.GetAllHotels() : _repository.SearchHotels(q);
+        var hotels = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllHotelsAsync() : await _repository.SearchHotelsAsync(q);
         return View(hotels);
     }
 
     [Route("search")]
-    public IActionResult Search(string q)
+    public async Task<IActionResult> Search(string q)
     {
-        var hotels = string.IsNullOrWhiteSpace(q) ? _repository.GetAllHotels() : _repository.SearchHotels(q);
+        var hotels = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllHotelsAsync() : await _repository.SearchHotelsAsync(q);
         return PartialView("_HotelsTable", hotels);
     }
 
     [Route("autocomplete")]
-    public IActionResult Autocomplete(string term)
+    public async Task<IActionResult> Autocomplete(string term)
     {
-        var results = _repository.SearchHotels(term)
-            .Select(h => new { id = h.Id, text = h.Name, meta = h.City });
+        var hotels = await _repository.SearchHotelsAsync(term);
+        var results = hotels.Select(h => new { id = h.Id, text = h.Name, meta = h.City });
         return Json(results);
     }
 
@@ -56,7 +56,7 @@ public class HotelsController : Controller
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create(HotelFormModel model)
+    public async Task<IActionResult> Create(HotelFormModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -73,16 +73,16 @@ public class HotelsController : Controller
         };
 
         _repository.AddHotel(hotel);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var hotel = _repository.GetHotelById(id);
+        var hotel = await _repository.GetHotelByIdAsync(id);
         if (hotel == null)
         {
             return NotFound();
@@ -94,14 +94,14 @@ public class HotelsController : Controller
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id, HotelFormModel model)
+    public async Task<IActionResult> Edit(int id, HotelFormModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var hotel = _repository.GetHotelById(id);
+        var hotel = await _repository.GetHotelByIdAsync(id);
         if (hotel == null)
         {
             return NotFound();
@@ -109,16 +109,16 @@ public class HotelsController : Controller
 
         model.UpdateEntity(hotel);
         _repository.UpdateHotel(hotel);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var hotel = _repository.GetHotelById(id);
+        var hotel = await _repository.GetHotelByIdAsync(id);
         if (hotel == null)
         {
             return NotFound();
@@ -131,18 +131,18 @@ public class HotelsController : Controller
     [Authorize(Roles = "Admin")]
     [ActionName("Delete")]
     [Route("delete/{id:int}")]
-    public IActionResult DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        _repository.DeleteHotel(id);
-        _repository.SaveChanges();
+        await _repository.DeleteHotelAsync(id);
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [AllowAnonymous]
     [Route("{id:int}")]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        var hotel = _repository.GetHotelById(id);
+        var hotel = await _repository.GetHotelByIdAsync(id);
         if (hotel == null)
         {
             return NotFound();
@@ -153,19 +153,16 @@ public class HotelsController : Controller
 
     [AllowAnonymous]
     [HttpGet("{id:int}/attachments")]
-    public async Task<IActionResult> GetAttachments(int id)
+    public async Task<IActionResult> GetAttachments(int id, [FromQuery] bool isEdit = false)
     {
-        var hotel = await _context.Hotels.FindAsync(id);
+        var hotel = await _repository.GetHotelByIdAsync(id);
         if (hotel == null)
         {
             return NotFound();
         }
 
-        var attachments = await _context.Attachments
-            .Where(a => a.HotelId == id)
-            .OrderByDescending(a => a.CreatedAt)
-            .ToListAsync();
-
+        var attachments = await _attachmentService.GetAttachmentsForHotelAsync(id);
+        ViewData["IsEdit"] = isEdit;
         return PartialView("_AttachmentList", attachments);
     }
 
@@ -173,7 +170,7 @@ public class HotelsController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UploadAttachment(int id, IFormFile file)
     {
-        var hotel = await _context.Hotels.FindAsync(id);
+        var hotel = await _repository.GetHotelByIdAsync(id);
         if (hotel == null)
         {
             return NotFound();
@@ -185,29 +182,16 @@ public class HotelsController : Controller
             return RedirectToAction(nameof(Details), new { id });
         }
 
-        var uploadsPath = Path.Combine(_environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"), "uploads", "hotels", id.ToString());
-        Directory.CreateDirectory(uploadsPath);
-
-        var fileName = Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName);
-        var fullPath = Path.Combine(uploadsPath, fileName);
-
-        await using (var stream = new FileStream(fullPath, FileMode.Create))
+        var attachment = await _attachmentService.UploadAttachmentAsync(id, file);
+        if (attachment != null)
         {
-            await file.CopyToAsync(stream);
+            TempData["AttachmentMessage"] = "The file was uploaded successfully.";
         }
-
-        _context.Attachments.Add(new Attachment
+        else
         {
-            HotelId = id,
-            FileName = Path.GetFileName(file.FileName),
-            FilePath = $"/uploads/hotels/{id}/{fileName}",
-            ContentType = file.ContentType,
-            FileSize = file.Length,
-            CreatedAt = DateTime.UtcNow
-        });
-
-        await _context.SaveChangesAsync();
-        TempData["AttachmentMessage"] = "The file was uploaded successfully.";
+            TempData["AttachmentMessage"] = "The file upload failed.";
+        }
+        
         return RedirectToAction(nameof(Details), new { id });
     }
 
@@ -216,20 +200,11 @@ public class HotelsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteAttachment(int id, int attachmentId)
     {
-        var attachment = await _context.Attachments.SingleOrDefaultAsync(a => a.Id == attachmentId && a.HotelId == id);
-        if (attachment == null)
+        var success = await _attachmentService.DeleteAttachmentAsync(id, attachmentId);
+        if (!success)
         {
             return NotFound();
         }
-
-        var physicalPath = Path.Combine(_environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"), attachment.FilePath.TrimStart('/'));
-        if (System.IO.File.Exists(physicalPath))
-        {
-            System.IO.File.Delete(physicalPath);
-        }
-
-        _context.Attachments.Remove(attachment);
-        await _context.SaveChangesAsync();
 
         return Json(new { success = true });
     }

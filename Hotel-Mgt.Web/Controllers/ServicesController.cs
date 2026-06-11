@@ -4,6 +4,7 @@ using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HotelMgt.Web.Controllers;
 
@@ -18,44 +19,44 @@ public class ServicesController : Controller
     }
 
     [Route("")]
-    public IActionResult Index(string q)
+    public async Task<IActionResult> Index(string q)
     {
         ViewData["SearchTerm"] = q;
-        var services = string.IsNullOrWhiteSpace(q) ? _repository.GetAllServices() : _repository.SearchServices(q);
+        var services = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllServicesAsync() : await _repository.SearchServicesAsync(q);
         return View(services);
     }
 
     [Route("search")]
-    public IActionResult Search(string q)
+    public async Task<IActionResult> Search(string q)
     {
-        var services = string.IsNullOrWhiteSpace(q) ? _repository.GetAllServices() : _repository.SearchServices(q);
+        var services = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllServicesAsync() : await _repository.SearchServicesAsync(q);
         return PartialView("_ServicesTable", services);
     }
 
     [Route("autocomplete")]
-    public IActionResult Autocomplete(string term)
+    public async Task<IActionResult> Autocomplete(string term)
     {
-        var results = _repository.SearchServices(term)
-            .Select(s => new { id = s.Id, text = s.Name, meta = s.Hotel?.Name });
+        var services = await _repository.SearchServicesAsync(term);
+        var results = services.Select(s => new { id = s.Id, text = s.Name, meta = s.Hotel?.Name });
         return Json(results);
     }
 
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        ViewBag.Hotels = _repository.GetAllHotels();
+        ViewBag.Hotels = await _repository.GetAllHotelsAsync();
         return View(new ServiceFormModel());
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create(ServiceFormModel model)
+    public async Task<IActionResult> Create(ServiceFormModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Hotels = _repository.GetAllHotels();
+            ViewBag.Hotels = await _repository.GetAllHotelsAsync();
             return View(model);
         }
 
@@ -69,36 +70,36 @@ public class ServicesController : Controller
         };
 
         _repository.AddService(service);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var service = _repository.GetServiceById(id);
+        var service = await _repository.GetServiceByIdAsync(id);
         if (service == null)
         {
             return NotFound();
         }
 
-        ViewBag.Hotels = _repository.GetAllHotels();
+        ViewBag.Hotels = await _repository.GetAllHotelsAsync();
         return View(ServiceFormModel.FromEntity(service));
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id, ServiceFormModel model)
+    public async Task<IActionResult> Edit(int id, ServiceFormModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Hotels = _repository.GetAllHotels();
+            ViewBag.Hotels = await _repository.GetAllHotelsAsync();
             return View(model);
         }
 
-        var service = _repository.GetServiceById(id);
+        var service = await _repository.GetServiceByIdAsync(id);
         if (service == null)
         {
             return NotFound();
@@ -106,16 +107,16 @@ public class ServicesController : Controller
 
         model.UpdateEntity(service);
         _repository.UpdateService(service);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var service = _repository.GetServiceById(id);
+        var service = await _repository.GetServiceByIdAsync(id);
         if (service == null)
         {
             return NotFound();
@@ -128,18 +129,18 @@ public class ServicesController : Controller
     [Authorize(Roles = "Admin")]
     [ActionName("Delete")]
     [Route("delete/{id:int}")]
-    public IActionResult DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        _repository.DeleteService(id);
-        _repository.SaveChanges();
+        await _repository.DeleteServiceAsync(id);
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [AllowAnonymous]
     [Route("{id:int}")]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        var service = _repository.GetServiceById(id);
+        var service = await _repository.GetServiceByIdAsync(id);
         if (service == null)
         {
             return NotFound();

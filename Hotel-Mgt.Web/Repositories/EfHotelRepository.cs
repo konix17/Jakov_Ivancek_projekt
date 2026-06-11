@@ -1,6 +1,9 @@
 using HotelMgt.Model.Entities;
 using HotelMgt.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HotelMgt.Web.Repositories;
 
@@ -13,31 +16,32 @@ public class EfHotelRepository : IHotelRepository
         _context = context;
     }
 
-    public List<Hotel> GetAllHotels()
-        => _context.Hotels
+    public async Task<List<Hotel>> GetAllHotelsAsync()
+        => await _context.Hotels
             .Include(h => h.Rooms)
             .Include(h => h.Employees)
             .Include(h => h.Services)
             .Include(h => h.Reservations)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Hotel? GetHotelById(int id)
-        => _context.Hotels
+    public async Task<Hotel?> GetHotelByIdAsync(int id)
+        => await _context.Hotels
             .Include(h => h.Rooms)
             .Include(h => h.Employees)
             .Include(h => h.Services)
             .Include(h => h.Reservations)
-            .SingleOrDefault(h => h.Id == id);
+            .SingleOrDefaultAsync(h => h.Id == id);
 
-    public List<Hotel> SearchHotels(string query)
+    public async Task<List<Hotel>> SearchHotelsAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return GetAllHotels();
+            return await GetAllHotelsAsync();
         }
 
         var wildcard = $"%{query}%";
-        return _context.Hotels
+        return await _context.Hotels
             .Include(h => h.Rooms)
             .Include(h => h.Employees)
             .Include(h => h.Services)
@@ -46,172 +50,174 @@ public class EfHotelRepository : IHotelRepository
                      || EF.Functions.Like(h.City, wildcard)
                      || EF.Functions.Like(h.Address, wildcard)
                      || EF.Functions.Like(h.PhoneNumber, wildcard))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public void AddHotel(Hotel hotel) => _context.Hotels.Add(hotel);
     public void UpdateHotel(Hotel hotel) => _context.Hotels.Update(hotel);
-    public void DeleteHotel(int id)
+    public async Task DeleteHotelAsync(int id)
     {
-        var hotel = GetHotelById(id);
-        if (hotel != null)
+        var entity = await _context.Hotels.FindAsync(id);
+        if (entity != null)
         {
-            _context.Hotels.Remove(hotel);
+            _context.ChangeTracker.Clear();
+            var stub = new Hotel { Id = id };
+            _context.Hotels.Remove(stub);
         }
     }
 
-    public List<Room> GetAllRooms()
-        => _context.Rooms
+    public async Task<List<Room>> GetAllRoomsAsync()
+        => await _context.Rooms
             .Include(r => r.Hotel)
             .Include(r => r.Reservations)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Room? GetRoomById(int id)
-        => _context.Rooms
+    public async Task<Room?> GetRoomByIdAsync(int id)
+        => await _context.Rooms
             .Include(r => r.Hotel)
             .Include(r => r.Reservations)
-            .SingleOrDefault(r => r.Id == id);
+            .SingleOrDefaultAsync(r => r.Id == id);
 
-    public List<Room> GetRoomsByHotel(int hotelId)
-        => _context.Rooms
+    public async Task<List<Room>> GetRoomsByHotelAsync(int hotelId)
+        => await _context.Rooms
             .Include(r => r.Hotel)
             .Include(r => r.Reservations)
             .Where(r => r.HotelId == hotelId)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public List<Room> SearchRooms(string query)
+    public async Task<List<Room>> SearchRoomsAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return GetAllRooms();
+            return await GetAllRoomsAsync();
         }
 
         var wildcard = $"%{query}%";
-        return _context.Rooms
+        return await _context.Rooms
             .Include(r => r.Hotel)
             .Include(r => r.Reservations)
             .Where(r => EF.Functions.Like(r.RoomNumber, wildcard)
                      || EF.Functions.Like(r.Hotel.Name, wildcard)
                      || EF.Functions.Like(r.Hotel.City, wildcard))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public void AddRoom(Room room) => _context.Rooms.Add(room);
     public void UpdateRoom(Room room) => _context.Rooms.Update(room);
-    public void DeleteRoom(int id)
+    public async Task DeleteRoomAsync(int id)
     {
-        var room = GetRoomById(id);
-        if (room != null)
-        {
-            _context.Rooms.Remove(room);
-        }
+        var entity = await _context.Rooms.FindAsync(id);
+        if (entity != null) _context.Rooms.Remove(entity);
     }
 
-    public List<Service> GetAllServices()
-        => _context.Services
+    public async Task<List<Service>> GetAllServicesAsync()
+        => await _context.Services
             .Include(s => s.Hotel)
             .Include(s => s.Reservations)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Service? GetServiceById(int id)
-        => _context.Services
+    public async Task<Service?> GetServiceByIdAsync(int id)
+        => await _context.Services
             .Include(s => s.Hotel)
             .Include(s => s.Reservations)
-            .SingleOrDefault(s => s.Id == id);
+            .SingleOrDefaultAsync(s => s.Id == id);
 
-    public List<Service> SearchServices(string query)
+    public async Task<List<Service>> SearchServicesAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return GetAllServices();
+            return await GetAllServicesAsync();
         }
 
         var wildcard = $"%{query}%";
-        return _context.Services
+        return await _context.Services
             .Include(s => s.Hotel)
             .Include(s => s.Reservations)
             .Where(s => EF.Functions.Like(s.Name, wildcard)
                      || EF.Functions.Like(s.Description, wildcard)
                      || EF.Functions.Like(s.Hotel.Name, wildcard))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
     }
 
-    public List<Service> GetServicesByIds(IEnumerable<int> ids)
-        => _context.Services
+    public async Task<List<Service>> GetServicesByIdsAsync(IEnumerable<int> ids)
+        => await _context.Services
             .Where(s => ids.Contains(s.Id))
-            .ToList();
+            .ToListAsync();
 
     public void AddService(Service service) => _context.Services.Add(service);
     public void UpdateService(Service service) => _context.Services.Update(service);
-    public void DeleteService(int id)
+    public async Task DeleteServiceAsync(int id)
     {
-        var service = GetServiceById(id);
-        if (service != null)
-        {
-            _context.Services.Remove(service);
-        }
+        var entity = await _context.Services.FindAsync(id);
+        if (entity != null) _context.Services.Remove(entity);
     }
 
-    public List<Employee> GetAllEmployees()
-        => _context.Employees
+    public async Task<List<Employee>> GetAllEmployeesAsync()
+        => await _context.Employees
             .Include(e => e.Hotel)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Employee? GetEmployeeById(int id)
-        => _context.Employees
+    public async Task<Employee?> GetEmployeeByIdAsync(int id)
+        => await _context.Employees
             .Include(e => e.Hotel)
-            .SingleOrDefault(e => e.Id == id);
+            .SingleOrDefaultAsync(e => e.Id == id);
 
-    public List<Employee> SearchEmployees(string query)
+    public async Task<List<Employee>> SearchEmployeesAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return GetAllEmployees();
+            return await GetAllEmployeesAsync();
         }
 
         var wildcard = $"%{query}%";
-        return _context.Employees
+        return await _context.Employees
             .Include(e => e.Hotel)
             .Where(e => EF.Functions.Like(e.FirstName, wildcard)
                      || EF.Functions.Like(e.LastName, wildcard)
                      || EF.Functions.Like(e.Email, wildcard)
                      || EF.Functions.Like(e.PhoneNumber, wildcard)
                      || EF.Functions.Like(e.Hotel.Name, wildcard))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public void AddEmployee(Employee employee) => _context.Employees.Add(employee);
     public void UpdateEmployee(Employee employee) => _context.Employees.Update(employee);
-    public void DeleteEmployee(int id)
+    public async Task DeleteEmployeeAsync(int id)
     {
-        var employee = GetEmployeeById(id);
-        if (employee != null)
-        {
-            _context.Employees.Remove(employee);
-        }
+        var entity = await _context.Employees.FindAsync(id);
+        if (entity != null) _context.Employees.Remove(entity);
     }
 
-    public List<Guest> GetAllGuests()
-        => _context.Guests
+    public async Task<List<Guest>> GetAllGuestsAsync()
+        => await _context.Guests
             .Include(g => g.Reservations)
             .Include(g => g.Reviews)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Guest? GetGuestById(int id)
-        => _context.Guests
+    public async Task<Guest?> GetGuestByIdAsync(int id)
+        => await _context.Guests
             .Include(g => g.Reservations)
             .Include(g => g.Reviews)
-            .SingleOrDefault(g => g.Id == id);
+            .SingleOrDefaultAsync(g => g.Id == id);
 
-    public List<Guest> SearchGuests(string query)
+    public async Task<List<Guest>> SearchGuestsAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return GetAllGuests();
+            return await GetAllGuestsAsync();
         }
 
         var wildcard = $"%{query}%";
-        return _context.Guests
+        return await _context.Guests
             .Include(g => g.Reservations)
             .Include(g => g.Reviews)
             .Where(g => EF.Functions.Like(g.FirstName, wildcard)
@@ -219,47 +225,46 @@ public class EfHotelRepository : IHotelRepository
                      || EF.Functions.Like(g.Email, wildcard)
                      || EF.Functions.Like(g.PhoneNumber, wildcard)
                      || EF.Functions.Like(g.DocumentNumber, wildcard))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public void AddGuest(Guest guest) => _context.Guests.Add(guest);
     public void UpdateGuest(Guest guest) => _context.Guests.Update(guest);
-    public void DeleteGuest(int id)
+    public async Task DeleteGuestAsync(int id)
     {
-        var guest = GetGuestById(id);
-        if (guest != null)
-        {
-            _context.Guests.Remove(guest);
-        }
+        var entity = await _context.Guests.FindAsync(id);
+        if (entity != null) _context.Guests.Remove(entity);
     }
 
-    public List<Reservation> GetAllReservations()
-        => _context.Reservations
+    public async Task<List<Reservation>> GetAllReservationsAsync()
+        => await _context.Reservations
             .Include(r => r.Guest)
             .Include(r => r.Room)
                 .ThenInclude(room => room.Hotel)
             .Include(r => r.Services)
             .Include(r => r.Payments)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Reservation? GetReservationById(int id)
-        => _context.Reservations
+    public async Task<Reservation?> GetReservationByIdAsync(int id)
+        => await _context.Reservations
             .Include(r => r.Guest)
             .Include(r => r.Room)
                 .ThenInclude(room => room.Hotel)
             .Include(r => r.Services)
             .Include(r => r.Payments)
-            .SingleOrDefault(r => r.Id == id);
+            .SingleOrDefaultAsync(r => r.Id == id);
 
-    public List<Reservation> SearchReservations(string query)
+    public async Task<List<Reservation>> SearchReservationsAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return GetAllReservations();
+            return await GetAllReservationsAsync();
         }
 
         var wildcard = $"%{query}%";
-        return _context.Reservations
+        return await _context.Reservations
             .Include(r => r.Guest)
             .Include(r => r.Room)
                 .ThenInclude(room => room.Hotel)
@@ -271,84 +276,82 @@ public class EfHotelRepository : IHotelRepository
                      || EF.Functions.Like(r.Guest.LastName, wildcard)
                      || EF.Functions.Like(r.Room.RoomNumber, wildcard)
                      || EF.Functions.Like(r.Room.Hotel.Name, wildcard))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public void AddReservation(Reservation reservation) => _context.Reservations.Add(reservation);
     public void UpdateReservation(Reservation reservation) => _context.Reservations.Update(reservation);
-    public void DeleteReservation(int id)
+    public async Task DeleteReservationAsync(int id)
     {
-        var reservation = GetReservationById(id);
-        if (reservation != null)
-        {
-            _context.Reservations.Remove(reservation);
-        }
+        var entity = await _context.Reservations.FindAsync(id);
+        if (entity != null) _context.Reservations.Remove(entity);
     }
 
-    public List<Payment> GetAllPayments()
-        => _context.Payments
+    public async Task<List<Payment>> GetAllPaymentsAsync()
+        => await _context.Payments
             .Include(p => p.Reservation)
                 .ThenInclude(r => r.Room)
                     .ThenInclude(room => room.Hotel)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Payment? GetPaymentById(int id)
-        => _context.Payments
+    public async Task<Payment?> GetPaymentByIdAsync(int id)
+        => await _context.Payments
             .Include(p => p.Reservation)
                 .ThenInclude(r => r.Room)
                     .ThenInclude(room => room.Hotel)
-            .SingleOrDefault(p => p.Id == id);
+            .SingleOrDefaultAsync(p => p.Id == id);
 
-    public List<Payment> SearchPayments(string query)
+    public async Task<List<Payment>> SearchPaymentsAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return GetAllPayments();
+            return await GetAllPaymentsAsync();
         }
 
         var wildcard = $"%{query}%";
-        return _context.Payments
+        return await _context.Payments
             .Include(p => p.Reservation)
                 .ThenInclude(r => r.Room)
                     .ThenInclude(room => room.Hotel)
             .Where(p => EF.Functions.Like(p.PaymentMethod.ToString(), wildcard)
                      || EF.Functions.Like(p.Reservation.ReservationCode, wildcard)
                      || EF.Functions.Like(p.Reservation.Room.RoomNumber, wildcard))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public void AddPayment(Payment payment) => _context.Payments.Add(payment);
     public void UpdatePayment(Payment payment) => _context.Payments.Update(payment);
-    public void DeletePayment(int id)
+    public async Task DeletePaymentAsync(int id)
     {
-        var payment = GetPaymentById(id);
-        if (payment != null)
-        {
-            _context.Payments.Remove(payment);
-        }
+        var entity = await _context.Payments.FindAsync(id);
+        if (entity != null) _context.Payments.Remove(entity);
     }
 
-    public List<Review> GetAllReviews()
-        => _context.Reviews
+    public async Task<List<Review>> GetAllReviewsAsync()
+        => await _context.Reviews
             .Include(r => r.Guest)
             .Include(r => r.Hotel)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
 
-    public Review? GetReviewById(int id)
-        => _context.Reviews
+    public async Task<Review?> GetReviewByIdAsync(int id)
+        => await _context.Reviews
             .Include(r => r.Guest)
             .Include(r => r.Hotel)
-            .SingleOrDefault(r => r.Id == id);
+            .SingleOrDefaultAsync(r => r.Id == id);
 
-    public List<Review> SearchReviews(string query)
+    public async Task<List<Review>> SearchReviewsAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
-            return GetAllReviews();
+            return await GetAllReviewsAsync();
         }
 
         var wildcard = $"%{query}%";
-        return _context.Reviews
+        return await _context.Reviews
             .Include(r => r.Guest)
             .Include(r => r.Hotel)
             .Where(r => EF.Functions.Like(r.Comment, wildcard)
@@ -356,19 +359,17 @@ public class EfHotelRepository : IHotelRepository
                      || EF.Functions.Like(r.Guest.LastName, wildcard)
                      || EF.Functions.Like(r.Hotel.Name, wildcard)
                      || EF.Functions.Like(r.Rating.ToString(), wildcard))
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public void AddReview(Review review) => _context.Reviews.Add(review);
     public void UpdateReview(Review review) => _context.Reviews.Update(review);
-    public void DeleteReview(int id)
+    public async Task DeleteReviewAsync(int id)
     {
-        var review = GetReviewById(id);
-        if (review != null)
-        {
-            _context.Reviews.Remove(review);
-        }
+        var entity = await _context.Reviews.FindAsync(id);
+        if (entity != null) _context.Reviews.Remove(entity);
     }
 
-    public bool SaveChanges() => _context.SaveChanges() >= 0;
+    public async Task<bool> SaveChangesAsync() => await _context.SaveChangesAsync() >= 0;
 }

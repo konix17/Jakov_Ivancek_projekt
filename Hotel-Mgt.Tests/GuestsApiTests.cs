@@ -119,4 +119,43 @@ public class GuestsApiTests
         var getResponse = await client.GetAsync($"/api/guests/{created.Id}");
         Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
+
+    [Fact]
+    public async Task Post_Guest_WithInvalidEmail_ReturnsBadRequest()
+    {
+        using var factory = new AuthenticatedWebApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/api/guests", new
+        {
+            FirstName = "Guest",
+            LastName = "One",
+            Email = "not-an-email", // invalid email format
+            PhoneNumber = "123",
+            DateOfBirth = DateTime.UtcNow.AddYears(-20),
+            DocumentNumber = "DOC123"
+        });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Put_Guest_ReturnsNotFound_WhenMissing()
+    {
+        using var factory = new AuthenticatedWebApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PutAsJsonAsync("/api/guests/9999", new
+        {
+            Id = 9999,
+            FirstName = "Guest",
+            LastName = "One",
+            Email = "guest@example.com",
+            PhoneNumber = "123",
+            DateOfBirth = DateTime.UtcNow.AddYears(-20),
+            DocumentNumber = "DOC123"
+        });
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
 }

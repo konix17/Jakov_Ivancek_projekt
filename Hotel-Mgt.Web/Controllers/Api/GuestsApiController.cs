@@ -3,6 +3,9 @@ using HotelMgt.Web.DTOs;
 using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HotelMgt.Web.Controllers.Api;
 
@@ -18,51 +21,51 @@ public class GuestsApiController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<GuestDto>> GetGuests([FromQuery] string? q = null)
+    public async Task<ActionResult<IEnumerable<GuestDto>>> GetGuests([FromQuery] string? q = null)
     {
-        var entities = string.IsNullOrWhiteSpace(q) ? _repository.GetAllGuests() : _repository.SearchGuests(q);
+        var entities = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllGuestsAsync() : await _repository.SearchGuestsAsync(q);
         return entities.Select(ApiDtoMapper.ToDto).ToList();
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<GuestDto> GetGuest(int id)
+    public async Task<ActionResult<GuestDto>> GetGuest(int id)
     {
-        var entity = _repository.GetGuestById(id);
+        var entity = await _repository.GetGuestByIdAsync(id);
         if (entity == null) return NotFound();
         return ApiDtoMapper.ToDto(entity);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
-    public ActionResult<GuestDto> CreateGuest(GuestCreateDto dto)
+    public async Task<ActionResult<GuestDto>> CreateGuest(GuestCreateDto dto)
     {
         var entity = new Guest { FirstName = dto.FirstName, LastName = dto.LastName, Email = dto.Email, PhoneNumber = dto.PhoneNumber, DateOfBirth = dto.DateOfBirth, DocumentNumber = dto.DocumentNumber };
         _repository.AddGuest(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return CreatedAtAction(nameof(GetGuest), new { id = entity.Id }, ApiDtoMapper.ToDto(entity));
     }
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin,Manager")]
-    public IActionResult UpdateGuest(int id, GuestUpdateDto dto)
+    public async Task<IActionResult> UpdateGuest(int id, GuestUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");
-        var entity = _repository.GetGuestById(id);
+        var entity = await _repository.GetGuestByIdAsync(id);
         if (entity == null) return NotFound();
         ApiDtoMapper.Apply(entity, dto);
         _repository.UpdateGuest(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteGuest(int id)
+    public async Task<IActionResult> DeleteGuest(int id)
     {
-        var entity = _repository.GetGuestById(id);
+        var entity = await _repository.GetGuestByIdAsync(id);
         if (entity == null) return NotFound();
-        _repository.DeleteGuest(id);
-        _repository.SaveChanges();
+        await _repository.DeleteGuestAsync(id);
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 }

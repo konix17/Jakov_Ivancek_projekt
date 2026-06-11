@@ -1,9 +1,11 @@
-using HotelMgt.Model;
 using HotelMgt.Model.Entities;
 using HotelMgt.Web.DTOs;
+using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HotelMgt.Web.Controllers.Api;
 
@@ -11,31 +13,26 @@ namespace HotelMgt.Web.Controllers.Api;
 [Route("api/hotels")]
 public class HotelsApiController : ControllerBase
 {
-    private readonly HotelDbContext _context;
+    private readonly IHotelRepository _repository;
 
-    public HotelsApiController(HotelDbContext context)
+    public HotelsApiController(IHotelRepository repository)
     {
-        _context = context;
+        _repository = repository;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<HotelDto>>> GetHotels([FromQuery] string? q = null)
     {
-        var query = _context.Hotels.AsQueryable();
-        if (!string.IsNullOrWhiteSpace(q))
-        {
-            query = query.Where(h => h.Name.Contains(q) || h.City.Contains(q));
-        }
-        var hotels = await query.ToListAsync();
+        var hotels = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllHotelsAsync() : await _repository.SearchHotelsAsync(q);
         return hotels.Select(ApiDtoMapper.ToDto).ToList();
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<HotelDto>> GetHotel(int id)
     {
-        var hotel = await _context.Hotels.FindAsync(id);
-        if (hotel == null) return NotFound();
-        return ApiDtoMapper.ToDto(hotel);
+        var entity = await _repository.GetHotelByIdAsync(id);
+        if (entity == null) return NotFound();
+        return ApiDtoMapper.ToDto(entity);
     }
 
     [HttpPost]
@@ -53,8 +50,8 @@ public class HotelsApiController : ControllerBase
             PhoneNumber = dto.PhoneNumber
         };
 
-        _context.Hotels.Add(entity);
-        await _context.SaveChangesAsync();
+        _repository.AddHotel(entity);
+        await _repository.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetHotel), new { id = entity.Id }, ApiDtoMapper.ToDto(entity));
     }
@@ -65,11 +62,12 @@ public class HotelsApiController : ControllerBase
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");
 
-        var entity = await _context.Hotels.FindAsync(id);
+        var entity = await _repository.GetHotelByIdAsync(id);
         if (entity == null) return NotFound();
 
         ApiDtoMapper.Apply(entity, dto);
-        await _context.SaveChangesAsync();
+        _repository.UpdateHotel(entity);
+        await _repository.SaveChangesAsync();
 
         return NoContent();
     }
@@ -78,11 +76,11 @@ public class HotelsApiController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteHotel(int id)
     {
-        var entity = await _context.Hotels.FindAsync(id);
+        var entity = await _repository.GetHotelByIdAsync(id);
         if (entity == null) return NotFound();
 
-        _context.Hotels.Remove(entity);
-        await _context.SaveChangesAsync();
+        await _repository.DeleteHotelAsync(id);
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 }

@@ -4,6 +4,7 @@ using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HotelMgt.Web.Controllers;
 
@@ -18,25 +19,25 @@ public class GuestsController : Controller
     }
 
     [Route("")]
-    public IActionResult Index(string q)
+    public async Task<IActionResult> Index(string q)
     {
         ViewData["SearchTerm"] = q;
-        var guests = string.IsNullOrWhiteSpace(q) ? _repository.GetAllGuests() : _repository.SearchGuests(q);
+        var guests = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllGuestsAsync() : await _repository.SearchGuestsAsync(q);
         return View(guests);
     }
 
     [Route("search")]
-    public IActionResult Search(string q)
+    public async Task<IActionResult> Search(string q)
     {
-        var guests = string.IsNullOrWhiteSpace(q) ? _repository.GetAllGuests() : _repository.SearchGuests(q);
+        var guests = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllGuestsAsync() : await _repository.SearchGuestsAsync(q);
         return PartialView("_GuestsTable", guests);
     }
 
     [Route("autocomplete")]
-    public IActionResult Autocomplete(string term)
+    public async Task<IActionResult> Autocomplete(string term)
     {
-        var results = _repository.SearchGuests(term)
-            .Select(g => new { id = g.Id, text = g.FirstName + " " + g.LastName, meta = g.Email });
+        var guests = await _repository.SearchGuestsAsync(term);
+        var results = guests.Select(g => new { id = g.Id, text = g.FirstName + " " + g.LastName, meta = g.Email });
         return Json(results);
     }
 
@@ -50,7 +51,7 @@ public class GuestsController : Controller
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create(GuestFormModel model)
+    public async Task<IActionResult> Create(GuestFormModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -68,15 +69,15 @@ public class GuestsController : Controller
         };
 
         _repository.AddGuest(guest);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var guest = _repository.GetGuestById(id);
+        var guest = await _repository.GetGuestByIdAsync(id);
         if (guest == null)
         {
             return NotFound();
@@ -88,14 +89,14 @@ public class GuestsController : Controller
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id, GuestFormModel model)
+    public async Task<IActionResult> Edit(int id, GuestFormModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var guest = _repository.GetGuestById(id);
+        var guest = await _repository.GetGuestByIdAsync(id);
         if (guest == null)
         {
             return NotFound();
@@ -103,15 +104,15 @@ public class GuestsController : Controller
 
         model.UpdateEntity(guest);
         _repository.UpdateGuest(guest);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var guest = _repository.GetGuestById(id);
+        var guest = await _repository.GetGuestByIdAsync(id);
         if (guest == null)
         {
             return NotFound();
@@ -124,18 +125,18 @@ public class GuestsController : Controller
     [Authorize(Roles = "Admin")]
     [ActionName("Delete")]
     [Route("delete/{id:int}")]
-    public IActionResult DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        _repository.DeleteGuest(id);
-        _repository.SaveChanges();
+        await _repository.DeleteGuestAsync(id);
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [AllowAnonymous]
     [Route("{id:int}")]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        var guest = _repository.GetGuestById(id);
+        var guest = await _repository.GetGuestByIdAsync(id);
         if (guest == null)
         {
             return NotFound();

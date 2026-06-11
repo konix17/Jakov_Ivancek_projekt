@@ -4,6 +4,8 @@ using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HotelMgt.Web.Controllers;
 
@@ -18,53 +20,53 @@ public class ReservationsController : Controller
     }
 
     [Route("")]
-    public IActionResult Index(string q)
+    public async Task<IActionResult> Index(string q)
     {
         ViewData["SearchTerm"] = q;
-        var reservations = string.IsNullOrWhiteSpace(q) ? _repository.GetAllReservations() : _repository.SearchReservations(q);
+        var reservations = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllReservationsAsync() : await _repository.SearchReservationsAsync(q);
         return View(reservations);
     }
 
     [Route("search")]
-    public IActionResult Search(string q)
+    public async Task<IActionResult> Search(string q)
     {
-        var reservations = string.IsNullOrWhiteSpace(q) ? _repository.GetAllReservations() : _repository.SearchReservations(q);
+        var reservations = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllReservationsAsync() : await _repository.SearchReservationsAsync(q);
         return PartialView("_ReservationsTable", reservations);
     }
 
     [Route("autocomplete")]
-    public IActionResult Autocomplete(string term)
+    public async Task<IActionResult> Autocomplete(string term)
     {
-        var results = _repository.SearchReservations(term)
-            .Select(r => new { id = r.Id, text = r.ReservationCode, meta = r.Guest?.FirstName + " " + r.Guest?.LastName });
+        var reservations = await _repository.SearchReservationsAsync(term);
+        var results = reservations.Select(r => new { id = r.Id, text = r.ReservationCode, meta = r.Guest?.FirstName + " " + r.Guest?.LastName });
         return Json(results);
     }
 
-    private void PopulateReservationFormData(ReservationFormModel model)
+    private async Task PopulateReservationFormDataAsync(ReservationFormModel model)
     {
-        ViewBag.Hotels = _repository.GetAllHotels();
-        ViewBag.Guests = _repository.GetAllGuests();
-        ViewBag.Services = _repository.GetAllServices();
-        ViewBag.Rooms = model.HotelId > 0 ? _repository.GetRoomsByHotel(model.HotelId) : new List<Room>();
+        ViewBag.Hotels = await _repository.GetAllHotelsAsync();
+        ViewBag.Guests = await _repository.GetAllGuestsAsync();
+        ViewBag.Services = await _repository.GetAllServicesAsync();
+        ViewBag.Rooms = model.HotelId > 0 ? await _repository.GetRoomsByHotelAsync(model.HotelId) : new List<Room>();
     }
 
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
         var model = new ReservationFormModel();
-        PopulateReservationFormData(model);
+        await PopulateReservationFormDataAsync(model);
         return View(model);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create(ReservationFormModel model)
+    public async Task<IActionResult> Create(ReservationFormModel model)
     {
         if (!ModelState.IsValid)
         {
-            PopulateReservationFormData(model);
+            await PopulateReservationFormDataAsync(model);
             return View(model);
         }
 
@@ -78,42 +80,42 @@ public class ReservationsController : Controller
             Status = model.Status,
             GuestId = model.GuestId,
             RoomId = model.RoomId,
-            Services = _repository.GetServicesByIds(model.SelectedServiceIds)
+            Services = await _repository.GetServicesByIdsAsync(model.SelectedServiceIds)
         };
 
         _repository.AddReservation(reservation);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var reservation = _repository.GetReservationById(id);
+        var reservation = await _repository.GetReservationByIdAsync(id);
         if (reservation == null)
         {
             return NotFound();
         }
 
         var model = ReservationFormModel.FromEntity(reservation);
-        PopulateReservationFormData(model);
+        await PopulateReservationFormDataAsync(model);
         return View(model);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id, ReservationFormModel model)
+    public async Task<IActionResult> Edit(int id, ReservationFormModel model)
     {
         if (!ModelState.IsValid)
         {
-            PopulateReservationFormData(model);
+            await PopulateReservationFormDataAsync(model);
             return View(model);
         }
 
-        var reservation = _repository.GetReservationById(id);
+        var reservation = await _repository.GetReservationByIdAsync(id);
         if (reservation == null)
         {
             return NotFound();
@@ -127,34 +129,33 @@ public class ReservationsController : Controller
         reservation.Status = model.Status;
         reservation.GuestId = model.GuestId;
         reservation.RoomId = model.RoomId;
-        reservation.Services = _repository.GetServicesByIds(model.SelectedServiceIds);
+        reservation.Services = await _repository.GetServicesByIdsAsync(model.SelectedServiceIds);
 
         _repository.UpdateReservation(reservation);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
 
     [Route("hotel-rooms")]
-    public IActionResult HotelRooms(int hotelId)
+    public async Task<IActionResult> HotelRooms(int hotelId)
     {
         if (hotelId <= 0)
         {
             return Json(new List<object>());
         }
 
-        var rooms = _repository.GetRoomsByHotel(hotelId)
-            .Select(r => new { id = r.Id, text = r.RoomNumber })
-            .ToList();
+        var rooms = await _repository.GetRoomsByHotelAsync(hotelId);
+        var mapped = rooms.Select(r => new { id = r.Id, text = r.RoomNumber }).ToList();
 
-        return Json(rooms);
+        return Json(mapped);
     }
 
     [Authorize(Roles = "Admin")]
     [Route("delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var reservation = _repository.GetReservationById(id);
+        var reservation = await _repository.GetReservationByIdAsync(id);
         if (reservation == null)
         {
             return NotFound();
@@ -167,18 +168,18 @@ public class ReservationsController : Controller
     [Authorize(Roles = "Admin")]
     [ActionName("Delete")]
     [Route("delete/{id:int}")]
-    public IActionResult DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        _repository.DeleteReservation(id);
-        _repository.SaveChanges();
+        await _repository.DeleteReservationAsync(id);
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [AllowAnonymous]
     [Route("{id:int}")]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        var reservation = _repository.GetReservationById(id);
+        var reservation = await _repository.GetReservationByIdAsync(id);
         if (reservation == null)
         {
             return NotFound();
@@ -186,7 +187,7 @@ public class ReservationsController : Controller
 
         if (reservation.Room != null && reservation.Room.Hotel == null)
         {
-            var hotel = _repository.GetHotelById(reservation.Room.HotelId);
+            var hotel = await _repository.GetHotelByIdAsync(reservation.Room.HotelId);
             if (hotel != null)
             {
                 reservation.Room.Hotel = hotel;

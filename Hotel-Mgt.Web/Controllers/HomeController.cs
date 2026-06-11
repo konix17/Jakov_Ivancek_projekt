@@ -16,16 +16,16 @@ public class HomeController : Controller
         _repository = repository;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var hotels = _repository.GetAllHotels();
-        var rooms = _repository.GetAllRooms();
-        var guests = _repository.GetAllGuests();
-        var reservations = _repository.GetAllReservations();
-        var services = _repository.GetAllServices();
-        var employees = _repository.GetAllEmployees();
-        var payments = _repository.GetAllPayments();
-        var reviews = _repository.GetAllReviews();
+        var hotels = await _repository.GetAllHotelsAsync();
+        var rooms = await _repository.GetAllRoomsAsync();
+        var guests = await _repository.GetAllGuestsAsync();
+        var reservations = await _repository.GetAllReservationsAsync();
+        var services = await _repository.GetAllServicesAsync();
+        var employees = await _repository.GetAllEmployeesAsync();
+        var payments = await _repository.GetAllPaymentsAsync();
+        var reviews = await _repository.GetAllReviewsAsync();
 
         var confirmedReservations = reservations.Where(r => r.Status == ReservationStatus.Confirmed).ToList();
         var occupiedRooms = rooms.Count(r => !r.IsAvailable);

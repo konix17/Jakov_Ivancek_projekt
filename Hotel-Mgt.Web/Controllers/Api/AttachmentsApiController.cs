@@ -1,8 +1,8 @@
 using HotelMgt.Model;
 using HotelMgt.Model.Entities;
+using HotelMgt.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HotelMgt.Web.Controllers.Api;
 
@@ -10,26 +10,17 @@ namespace HotelMgt.Web.Controllers.Api;
 [Route("api/hotels/{hotelId:int}/attachments")]
 public class AttachmentsApiController : ControllerBase
 {
-    private readonly HotelDbContext _context;
-    private readonly IWebHostEnvironment _environment;
+    private readonly IAttachmentService _attachmentService;
 
-    public AttachmentsApiController(HotelDbContext context, IWebHostEnvironment environment)
+    public AttachmentsApiController(IAttachmentService attachmentService)
     {
-        _context = context;
-        _environment = environment;
+        _attachmentService = attachmentService;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AttachmentDto>>> GetAttachments(int hotelId)
     {
-        var hotel = await _context.Hotels.FindAsync(hotelId);
-        if (hotel == null) return NotFound();
-
-        var attachments = await _context.Attachments
-            .Where(a => a.HotelId == hotelId)
-            .OrderByDescending(a => a.CreatedAt)
-            .ToListAsync();
-
+        var attachments = await _attachmentService.GetAttachmentsForHotelAsync(hotelId);
         return attachments.Select(a => new AttachmentDto(a.Id, a.FileName, a.FilePath, a.ContentType, a.FileSize, a.CreatedAt)).ToList();
     }
 
@@ -37,34 +28,10 @@ public class AttachmentsApiController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UploadAttachment(int hotelId, IFormFile file)
     {
-        var hotel = await _context.Hotels.FindAsync(hotelId);
-        if (hotel == null) return NotFound();
-
         if (file == null || file.Length == 0) return BadRequest("No file uploaded.");
 
-        var uploadsPath = Path.Combine(_environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"), "uploads", "hotels", hotelId.ToString());
-        Directory.CreateDirectory(uploadsPath);
-
-        var fileName = Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName);
-        var fullPath = Path.Combine(uploadsPath, fileName);
-
-        await using (var stream = new FileStream(fullPath, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        var attachment = new Attachment
-        {
-            HotelId = hotelId,
-            FileName = Path.GetFileName(file.FileName),
-            FilePath = $"/uploads/hotels/{hotelId}/{fileName}",
-            ContentType = file.ContentType,
-            FileSize = file.Length,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        _context.Attachments.Add(attachment);
-        await _context.SaveChangesAsync();
+        var attachment = await _attachmentService.UploadAttachmentAsync(hotelId, file);
+        if (attachment == null) return NotFound("Hotel not found or upload failed.");
 
         return Ok(new { success = true, attachmentId = attachment.Id });
     }
@@ -73,14 +40,8 @@ public class AttachmentsApiController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAttachment(int hotelId, int attachmentId)
     {
-        var attachment = await _context.Attachments.SingleOrDefaultAsync(a => a.Id == attachmentId && a.HotelId == hotelId);
-        if (attachment == null) return NotFound();
-
-        var physicalPath = Path.Combine(_environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"), attachment.FilePath.TrimStart('/'));
-        if (System.IO.File.Exists(physicalPath)) System.IO.File.Delete(physicalPath);
-
-        _context.Attachments.Remove(attachment);
-        await _context.SaveChangesAsync();
+        var success = await _attachmentService.DeleteAttachmentAsync(hotelId, attachmentId);
+        if (!success) return NotFound();
 
         return NoContent();
     }

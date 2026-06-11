@@ -170,6 +170,9 @@ public class AccountController : Controller
                 return RedirectToAction(nameof(ExternalLoginConfirmation), new { email, returnUrl });
             }
 
+            // Link the external login to the existing user so future logins succeed automatically
+            await _userManager.AddLoginAsync(user, info);
+
             await _signInManager.SignInAsync(user, isPersistent: false);
             return LocalRedirect(returnUrl ?? Url.Content("~/"));
         }

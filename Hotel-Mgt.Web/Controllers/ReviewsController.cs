@@ -4,6 +4,8 @@ using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
+using System;
 
 namespace HotelMgt.Web.Controllers;
 
@@ -18,48 +20,48 @@ public class ReviewsController : Controller
     }
 
     [Route("")]
-    public IActionResult Index(string q)
+    public async Task<IActionResult> Index(string q)
     {
         ViewData["SearchTerm"] = q;
-        var reviews = string.IsNullOrWhiteSpace(q) ? _repository.GetAllReviews() : _repository.SearchReviews(q);
+        var reviews = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllReviewsAsync() : await _repository.SearchReviewsAsync(q);
         return View(reviews);
     }
 
     [Route("search")]
-    public IActionResult Search(string q)
+    public async Task<IActionResult> Search(string q)
     {
-        var reviews = string.IsNullOrWhiteSpace(q) ? _repository.GetAllReviews() : _repository.SearchReviews(q);
+        var reviews = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllReviewsAsync() : await _repository.SearchReviewsAsync(q);
         return PartialView("_ReviewsTable", reviews);
     }
 
     [Route("autocomplete")]
-    public IActionResult Autocomplete(string term)
+    public async Task<IActionResult> Autocomplete(string term)
     {
-        var results = _repository.SearchReviews(term)
-            .Select(r => new { id = r.Id, text = r.Comment, meta = r.Guest?.FirstName + " " + r.Guest?.LastName });
+        var reviews = await _repository.SearchReviewsAsync(term);
+        var results = reviews.Select(r => new { id = r.Id, text = r.Comment, meta = r.Guest?.FirstName + " " + r.Guest?.LastName });
         return Json(results);
     }
 
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        ViewBag.Guests = _repository.GetAllGuests();
-        ViewBag.Hotels = _repository.GetAllHotels();
+        ViewBag.Guests = await _repository.GetAllGuestsAsync();
+        ViewBag.Hotels = await _repository.GetAllHotelsAsync();
         return View(new ReviewFormModel());
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create(ReviewFormModel model)
+    public async Task<IActionResult> Create(ReviewFormModel model)
     {
         model.CreatedAt = DateTime.Today;
 
         if (!ModelState.IsValid)
         {
-            ViewBag.Guests = _repository.GetAllGuests();
-            ViewBag.Hotels = _repository.GetAllHotels();
+            ViewBag.Guests = await _repository.GetAllGuestsAsync();
+            ViewBag.Hotels = await _repository.GetAllHotelsAsync();
             return View(model);
         }
 
@@ -73,38 +75,38 @@ public class ReviewsController : Controller
         };
 
         _repository.AddReview(review);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var review = _repository.GetReviewById(id);
+        var review = await _repository.GetReviewByIdAsync(id);
         if (review == null)
         {
             return NotFound();
         }
 
-        ViewBag.Guests = _repository.GetAllGuests();
-        ViewBag.Hotels = _repository.GetAllHotels();
+        ViewBag.Guests = await _repository.GetAllGuestsAsync();
+        ViewBag.Hotels = await _repository.GetAllHotelsAsync();
         return View(ReviewFormModel.FromEntity(review));
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id, ReviewFormModel model)
+    public async Task<IActionResult> Edit(int id, ReviewFormModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Guests = _repository.GetAllGuests();
-            ViewBag.Hotels = _repository.GetAllHotels();
+            ViewBag.Guests = await _repository.GetAllGuestsAsync();
+            ViewBag.Hotels = await _repository.GetAllHotelsAsync();
             return View(model);
         }
 
-        var review = _repository.GetReviewById(id);
+        var review = await _repository.GetReviewByIdAsync(id);
         if (review == null)
         {
             return NotFound();
@@ -112,15 +114,15 @@ public class ReviewsController : Controller
 
         model.UpdateEntity(review);
         _repository.UpdateReview(review);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var review = _repository.GetReviewById(id);
+        var review = await _repository.GetReviewByIdAsync(id);
         if (review == null)
         {
             return NotFound();
@@ -133,18 +135,18 @@ public class ReviewsController : Controller
     [Authorize(Roles = "Admin")]
     [ActionName("Delete")]
     [Route("delete/{id:int}")]
-    public IActionResult DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        _repository.DeleteReview(id);
-        _repository.SaveChanges();
+        await _repository.DeleteReviewAsync(id);
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [AllowAnonymous]
     [Route("{id:int}")]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        var review = _repository.GetReviewById(id);
+        var review = await _repository.GetReviewByIdAsync(id);
         if (review == null)
         {
             return NotFound();

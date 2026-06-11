@@ -126,4 +126,60 @@ public class HotelApiTests
         var getResponse = await client.GetAsync($"/api/hotels/{created.Id}");
         Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
+
+    [Fact]
+    public async Task Post_Hotel_WithInvalidData_ReturnsBadRequest()
+    {
+        using var factory = new AuthenticatedWebApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/api/hotels", new
+        {
+            Name = "", // Required
+            Address = "Main Street 1",
+            City = "Zagreb",
+            Rating = 10, // Invalid range (1-5)
+            PhoneNumber = "012345678"
+        });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Put_Hotel_ReturnsNotFound_WhenMissing()
+    {
+        using var factory = new AuthenticatedWebApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PutAsJsonAsync("/api/hotels/9999", new
+        {
+            Id = 9999,
+            Name = "Bay Hotel",
+            Address = "Main Street 1",
+            City = "Zagreb",
+            Rating = 5,
+            PhoneNumber = "012345678"
+        });
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Put_Hotel_ReturnsBadRequest_WhenIdMismatch()
+    {
+        using var factory = new AuthenticatedWebApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PutAsJsonAsync("/api/hotels/1", new
+        {
+            Id = 2, // Id mismatch with route id (1)
+            Name = "Bay Hotel",
+            Address = "Main Street 1",
+            City = "Zagreb",
+            Rating = 5,
+            PhoneNumber = "012345678"
+        });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }

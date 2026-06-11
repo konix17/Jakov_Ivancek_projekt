@@ -3,6 +3,9 @@ using HotelMgt.Web.DTOs;
 using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HotelMgt.Web.Controllers.Api;
 
@@ -18,23 +21,23 @@ public class RoomsApiController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<RoomDto>> GetRooms([FromQuery] string? q = null)
+    public async Task<ActionResult<IEnumerable<RoomDto>>> GetRooms([FromQuery] string? q = null)
     {
-        var rooms = string.IsNullOrWhiteSpace(q) ? _repository.GetAllRooms() : _repository.SearchRooms(q);
+        var rooms = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllRoomsAsync() : await _repository.SearchRoomsAsync(q);
         return rooms.Select(ApiDtoMapper.ToDto).ToList();
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<RoomDto> GetRoom(int id)
+    public async Task<ActionResult<RoomDto>> GetRoom(int id)
     {
-        var entity = _repository.GetRoomById(id);
+        var entity = await _repository.GetRoomByIdAsync(id);
         if (entity == null) return NotFound();
         return ApiDtoMapper.ToDto(entity);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
-    public ActionResult<RoomDto> CreateRoom(RoomCreateDto dto)
+    public async Task<ActionResult<RoomDto>> CreateRoom(RoomCreateDto dto)
     {
         var entity = new Room
         {
@@ -48,34 +51,34 @@ public class RoomsApiController : ControllerBase
         };
 
         _repository.AddRoom(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetRoom), new { id = entity.Id }, ApiDtoMapper.ToDto(entity));
     }
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin,Manager")]
-    public IActionResult UpdateRoom(int id, RoomUpdateDto dto)
+    public async Task<IActionResult> UpdateRoom(int id, RoomUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");
-        var entity = _repository.GetRoomById(id);
+        var entity = await _repository.GetRoomByIdAsync(id);
         if (entity == null) return NotFound();
 
         ApiDtoMapper.Apply(entity, dto);
         _repository.UpdateRoom(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteRoom(int id)
+    public async Task<IActionResult> DeleteRoom(int id)
     {
-        var entity = _repository.GetRoomById(id);
+        var entity = await _repository.GetRoomByIdAsync(id);
         if (entity == null) return NotFound();
 
-        _repository.DeleteRoom(id);
-        _repository.SaveChanges();
+        await _repository.DeleteRoomAsync(id);
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 }

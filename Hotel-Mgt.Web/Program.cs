@@ -26,6 +26,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<HotelDbContext>(options =>
     options.UseSqlite(sqliteConnectionString));
 builder.Services.AddScoped<IHotelRepository, EfHotelRepository>();
+builder.Services.AddScoped<HotelMgt.Web.Services.IAttachmentService, HotelMgt.Web.Services.AttachmentService>();
 
 var authenticationBuilder = builder.Services.AddAuthentication();
 
@@ -100,14 +101,6 @@ using (var scope = app.Services.CreateScope())
     if (!Path.IsPathRooted(dbPath))
     {
         dbPath = Path.Combine(app.Environment.ContentRootPath, dbPath);
-    }
-
-    foreach (var fileToDelete in new[] { dbPath, dbPath + "-wal", dbPath + "-shm" })
-    {
-        if (File.Exists(fileToDelete))
-        {
-            File.Delete(fileToDelete);
-        }
     }
 
     await using var resetConnection = new SqliteConnection(sqliteConnectionString);

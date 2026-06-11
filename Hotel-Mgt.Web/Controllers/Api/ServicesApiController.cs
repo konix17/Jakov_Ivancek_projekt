@@ -3,6 +3,9 @@ using HotelMgt.Web.DTOs;
 using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HotelMgt.Web.Controllers.Api;
 
@@ -18,51 +21,51 @@ public class ServicesApiController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<ServiceDto>> GetServices([FromQuery] string? q = null)
+    public async Task<ActionResult<IEnumerable<ServiceDto>>> GetServices([FromQuery] string? q = null)
     {
-        var entities = string.IsNullOrWhiteSpace(q) ? _repository.GetAllServices() : _repository.SearchServices(q);
+        var entities = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllServicesAsync() : await _repository.SearchServicesAsync(q);
         return entities.Select(ApiDtoMapper.ToDto).ToList();
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<ServiceDto> GetService(int id)
+    public async Task<ActionResult<ServiceDto>> GetService(int id)
     {
-        var entity = _repository.GetServiceById(id);
+        var entity = await _repository.GetServiceByIdAsync(id);
         if (entity == null) return NotFound();
         return ApiDtoMapper.ToDto(entity);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
-    public ActionResult<ServiceDto> CreateService(ServiceCreateDto dto)
+    public async Task<ActionResult<ServiceDto>> CreateService(ServiceCreateDto dto)
     {
         var entity = new Service { Name = dto.Name, Description = dto.Description, Price = dto.Price, IsAvailable = dto.IsAvailable, HotelId = dto.HotelId };
         _repository.AddService(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return CreatedAtAction(nameof(GetService), new { id = entity.Id }, ApiDtoMapper.ToDto(entity));
     }
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin,Manager")]
-    public IActionResult UpdateService(int id, ServiceUpdateDto dto)
+    public async Task<IActionResult> UpdateService(int id, ServiceUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");
-        var entity = _repository.GetServiceById(id);
+        var entity = await _repository.GetServiceByIdAsync(id);
         if (entity == null) return NotFound();
         ApiDtoMapper.Apply(entity, dto);
         _repository.UpdateService(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteService(int id)
+    public async Task<IActionResult> DeleteService(int id)
     {
-        var entity = _repository.GetServiceById(id);
+        var entity = await _repository.GetServiceByIdAsync(id);
         if (entity == null) return NotFound();
-        _repository.DeleteService(id);
-        _repository.SaveChanges();
+        await _repository.DeleteServiceAsync(id);
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 }

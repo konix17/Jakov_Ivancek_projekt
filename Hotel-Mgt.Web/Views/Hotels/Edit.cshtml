@@ -86,7 +86,7 @@
         Dropzone.autoDiscover = false;
 
         function loadAttachments() {
-            $.get('@Url.Action("GetAttachments", "Hotels", new { id = Model.Id })', function(data) {
+            $.get('@Url.Action("GetAttachments", "Hotels", new { id = Model.Id, isEdit = true })', function(data) {
                 $('#attachments-container').html(data);
             });
         }

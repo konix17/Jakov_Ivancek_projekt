@@ -3,6 +3,9 @@ using HotelMgt.Web.DTOs;
 using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HotelMgt.Web.Controllers.Api;
 
@@ -18,51 +21,51 @@ public class PaymentsApiController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<PaymentDto>> GetPayments([FromQuery] string? q = null)
+    public async Task<ActionResult<IEnumerable<PaymentDto>>> GetPayments([FromQuery] string? q = null)
     {
-        var entities = string.IsNullOrWhiteSpace(q) ? _repository.GetAllPayments() : _repository.SearchPayments(q);
+        var entities = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllPaymentsAsync() : await _repository.SearchPaymentsAsync(q);
         return entities.Select(ApiDtoMapper.ToDto).ToList();
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<PaymentDto> GetPayment(int id)
+    public async Task<ActionResult<PaymentDto>> GetPayment(int id)
     {
-        var entity = _repository.GetPaymentById(id);
+        var entity = await _repository.GetPaymentByIdAsync(id);
         if (entity == null) return NotFound();
         return ApiDtoMapper.ToDto(entity);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
-    public ActionResult<PaymentDto> CreatePayment(PaymentCreateDto dto)
+    public async Task<ActionResult<PaymentDto>> CreatePayment(PaymentCreateDto dto)
     {
         var entity = new Payment { Amount = dto.Amount, PaymentDate = dto.PaymentDate, PaymentMethod = dto.PaymentMethod, IsPaid = dto.IsPaid, ReservationId = dto.ReservationId };
         _repository.AddPayment(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return CreatedAtAction(nameof(GetPayment), new { id = entity.Id }, ApiDtoMapper.ToDto(entity));
     }
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin,Manager")]
-    public IActionResult UpdatePayment(int id, PaymentUpdateDto dto)
+    public async Task<IActionResult> UpdatePayment(int id, PaymentUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");
-        var entity = _repository.GetPaymentById(id);
+        var entity = await _repository.GetPaymentByIdAsync(id);
         if (entity == null) return NotFound();
         ApiDtoMapper.Apply(entity, dto);
         _repository.UpdatePayment(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeletePayment(int id)
+    public async Task<IActionResult> DeletePayment(int id)
     {
-        var entity = _repository.GetPaymentById(id);
+        var entity = await _repository.GetPaymentByIdAsync(id);
         if (entity == null) return NotFound();
-        _repository.DeletePayment(id);
-        _repository.SaveChanges();
+        await _repository.DeletePaymentAsync(id);
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 }

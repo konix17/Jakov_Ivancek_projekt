@@ -4,6 +4,7 @@ using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HotelMgt.Web.Controllers;
 
@@ -18,44 +19,44 @@ public class EmployeesController : Controller
     }
 
     [Route("")]
-    public IActionResult Index(string q)
+    public async Task<IActionResult> Index(string q)
     {
         ViewData["SearchTerm"] = q;
-        var employees = string.IsNullOrWhiteSpace(q) ? _repository.GetAllEmployees() : _repository.SearchEmployees(q);
+        var employees = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllEmployeesAsync() : await _repository.SearchEmployeesAsync(q);
         return View(employees);
     }
 
     [Route("search")]
-    public IActionResult Search(string q)
+    public async Task<IActionResult> Search(string q)
     {
-        var employees = string.IsNullOrWhiteSpace(q) ? _repository.GetAllEmployees() : _repository.SearchEmployees(q);
+        var employees = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllEmployeesAsync() : await _repository.SearchEmployeesAsync(q);
         return PartialView("_EmployeesTable", employees);
     }
 
     [Route("autocomplete")]
-    public IActionResult Autocomplete(string term)
+    public async Task<IActionResult> Autocomplete(string term)
     {
-        var results = _repository.SearchEmployees(term)
-            .Select(e => new { id = e.Id, text = e.FirstName + " " + e.LastName, meta = e.Hotel?.Name });
+        var employees = await _repository.SearchEmployeesAsync(term);
+        var results = employees.Select(e => new { id = e.Id, text = e.FirstName + " " + e.LastName, meta = e.Hotel?.Name });
         return Json(results);
     }
 
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        ViewBag.Hotels = _repository.GetAllHotels();
+        ViewBag.Hotels = await _repository.GetAllHotelsAsync();
         return View(new EmployeeFormModel());
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("create")]
-    public IActionResult Create(EmployeeFormModel model)
+    public async Task<IActionResult> Create(EmployeeFormModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Hotels = _repository.GetAllHotels();
+            ViewBag.Hotels = await _repository.GetAllHotelsAsync();
             return View(model);
         }
 
@@ -72,36 +73,36 @@ public class EmployeesController : Controller
         };
 
         _repository.AddEmployee(employee);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var employee = _repository.GetEmployeeById(id);
+        var employee = await _repository.GetEmployeeByIdAsync(id);
         if (employee == null)
         {
             return NotFound();
         }
 
-        ViewBag.Hotels = _repository.GetAllHotels();
+        ViewBag.Hotels = await _repository.GetAllHotelsAsync();
         return View(EmployeeFormModel.FromEntity(employee));
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     [Route("edit/{id:int}")]
-    public IActionResult Edit(int id, EmployeeFormModel model)
+    public async Task<IActionResult> Edit(int id, EmployeeFormModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Hotels = _repository.GetAllHotels();
+            ViewBag.Hotels = await _repository.GetAllHotelsAsync();
             return View(model);
         }
 
-        var employee = _repository.GetEmployeeById(id);
+        var employee = await _repository.GetEmployeeByIdAsync(id);
         if (employee == null)
         {
             return NotFound();
@@ -109,15 +110,15 @@ public class EmployeesController : Controller
 
         model.UpdateEntity(employee);
         _repository.UpdateEmployee(employee);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [Authorize(Roles = "Admin")]
     [Route("delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var employee = _repository.GetEmployeeById(id);
+        var employee = await _repository.GetEmployeeByIdAsync(id);
         if (employee == null)
         {
             return NotFound();
@@ -130,18 +131,18 @@ public class EmployeesController : Controller
     [Authorize(Roles = "Admin")]
     [ActionName("Delete")]
     [Route("delete/{id:int}")]
-    public IActionResult DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        _repository.DeleteEmployee(id);
-        _repository.SaveChanges();
+        await _repository.DeleteEmployeeAsync(id);
+        await _repository.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
     [AllowAnonymous]
     [Route("{id:int}")]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
-        var employee = _repository.GetEmployeeById(id);
+        var employee = await _repository.GetEmployeeByIdAsync(id);
         if (employee == null)
         {
             return NotFound();

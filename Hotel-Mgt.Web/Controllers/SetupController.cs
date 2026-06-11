@@ -114,19 +114,4 @@ public class SetupController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EnsureRoles()
-    {
-        foreach (var roleName in new[] { "Admin", "Manager" })
-        {
-            if (!await _roleManager.RoleExistsAsync(roleName))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(roleName));
-            }
-        }
-
-        TempData["Message"] = "Identity roles are available for the app.";
-        return RedirectToAction(nameof(Index));
-    }
 }

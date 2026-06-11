@@ -3,6 +3,9 @@ using HotelMgt.Web.DTOs;
 using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HotelMgt.Web.Controllers.Api;
 
@@ -18,51 +21,51 @@ public class ReviewsApiController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<ReviewDto>> GetReviews([FromQuery] string? q = null)
+    public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews([FromQuery] string? q = null)
     {
-        var entities = string.IsNullOrWhiteSpace(q) ? _repository.GetAllReviews() : _repository.SearchReviews(q);
+        var entities = string.IsNullOrWhiteSpace(q) ? await _repository.GetAllReviewsAsync() : await _repository.SearchReviewsAsync(q);
         return entities.Select(ApiDtoMapper.ToDto).ToList();
     }
 
     [HttpGet("{id:int}")]
-    public ActionResult<ReviewDto> GetReview(int id)
+    public async Task<ActionResult<ReviewDto>> GetReview(int id)
     {
-        var entity = _repository.GetReviewById(id);
+        var entity = await _repository.GetReviewByIdAsync(id);
         if (entity == null) return NotFound();
         return ApiDtoMapper.ToDto(entity);
     }
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
-    public ActionResult<ReviewDto> CreateReview(ReviewCreateDto dto)
+    public async Task<ActionResult<ReviewDto>> CreateReview(ReviewCreateDto dto)
     {
         var entity = new Review { Rating = dto.Rating, Comment = dto.Comment, CreatedAt = dto.CreatedAt, GuestId = dto.GuestId, HotelId = dto.HotelId };
         _repository.AddReview(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return CreatedAtAction(nameof(GetReview), new { id = entity.Id }, ApiDtoMapper.ToDto(entity));
     }
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin,Manager")]
-    public IActionResult UpdateReview(int id, ReviewUpdateDto dto)
+    public async Task<IActionResult> UpdateReview(int id, ReviewUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");
-        var entity = _repository.GetReviewById(id);
+        var entity = await _repository.GetReviewByIdAsync(id);
         if (entity == null) return NotFound();
         ApiDtoMapper.Apply(entity, dto);
         _repository.UpdateReview(entity);
-        _repository.SaveChanges();
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteReview(int id)
+    public async Task<IActionResult> DeleteReview(int id)
     {
-        var entity = _repository.GetReviewById(id);
+        var entity = await _repository.GetReviewByIdAsync(id);
         if (entity == null) return NotFound();
-        _repository.DeleteReview(id);
-        _repository.SaveChanges();
+        await _repository.DeleteReviewAsync(id);
+        await _repository.SaveChangesAsync();
         return NoContent();
     }
 }
