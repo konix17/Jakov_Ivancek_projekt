@@ -36,7 +36,7 @@ public class EmployeesApiController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<EmployeeDto>> CreateEmployee(EmployeeCreateDto dto)
     {
         var entity = new Employee { FirstName = dto.FirstName, LastName = dto.LastName, Email = dto.Email, PhoneNumber = dto.PhoneNumber, Salary = dto.Salary, Role = dto.Role, HireDate = dto.HireDate, HotelId = dto.HotelId };
@@ -46,7 +46,7 @@ public class EmployeesApiController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateEmployee(int id, EmployeeUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");

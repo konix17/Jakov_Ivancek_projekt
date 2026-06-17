@@ -105,11 +105,6 @@ public class SetupController : Controller
             await _roleManager.CreateAsync(new IdentityRole("Admin"));
         }
 
-        if (!await _roleManager.RoleExistsAsync("Manager"))
-        {
-            await _roleManager.CreateAsync(new IdentityRole("Manager"));
-        }
-
         TempData["Message"] = "The database was reset and the identity roles were recreated.";
         return RedirectToAction(nameof(Index));
     }

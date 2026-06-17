@@ -72,7 +72,6 @@
                                     <input type="hidden" name="userId" value="@user.UserId" />
                                     <select name="roleName" class="form-select form-select-sm">
                                         <option value="User" selected="@(user.Roles.Contains("User") ? "selected" : null)">User</option>
-                                        <option value="Manager" selected="@(user.Roles.Contains("Manager") ? "selected" : null)">Manager</option>
                                         <option value="Admin" selected="@(user.Roles.Contains("Admin") ? "selected" : null)">Admin</option>
                                     </select>
                                     <button type="submit" class="btn btn-sm btn-secondary">Save</button>

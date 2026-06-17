@@ -36,7 +36,7 @@ public class HotelsApiController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<HotelDto>> CreateHotel(HotelCreateDto dto)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -57,7 +57,7 @@ public class HotelsApiController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateHotel(int id, HotelUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");

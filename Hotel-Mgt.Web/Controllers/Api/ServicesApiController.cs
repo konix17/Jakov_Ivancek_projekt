@@ -36,7 +36,7 @@ public class ServicesApiController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ServiceDto>> CreateService(ServiceCreateDto dto)
     {
         var entity = new Service { Name = dto.Name, Description = dto.Description, Price = dto.Price, IsAvailable = dto.IsAvailable, HotelId = dto.HotelId };
@@ -46,7 +46,7 @@ public class ServicesApiController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateService(int id, ServiceUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");

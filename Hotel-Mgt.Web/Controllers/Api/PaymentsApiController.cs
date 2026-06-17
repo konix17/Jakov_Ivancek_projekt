@@ -36,7 +36,7 @@ public class PaymentsApiController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<PaymentDto>> CreatePayment(PaymentCreateDto dto)
     {
         var entity = new Payment { Amount = dto.Amount, PaymentDate = dto.PaymentDate, PaymentMethod = dto.PaymentMethod, IsPaid = dto.IsPaid, ReservationId = dto.ReservationId };
@@ -46,7 +46,7 @@ public class PaymentsApiController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdatePayment(int id, PaymentUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");

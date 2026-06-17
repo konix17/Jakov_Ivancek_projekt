@@ -87,7 +87,7 @@ public class AccountController : Controller
         var result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
         {
-            foreach (var roleName in new[] { "Admin", "Manager", "User" })
+            foreach (var roleName in new[] { "Admin", "User" })
             {
                 if (!await _roleManager.RoleExistsAsync(roleName))
                 {
@@ -211,7 +211,7 @@ public class AccountController : Controller
             var result = await _userManager.CreateAsync(user);
             if (result.Succeeded)
             {
-                foreach (var roleName in new[] { "Admin", "Manager", "User" })
+                foreach (var roleName in new[] { "Admin", "User" })
                 {
                     if (!await _roleManager.RoleExistsAsync(roleName))
                     {

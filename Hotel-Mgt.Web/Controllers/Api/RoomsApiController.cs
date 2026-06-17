@@ -36,7 +36,7 @@ public class RoomsApiController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<RoomDto>> CreateRoom(RoomCreateDto dto)
     {
         var entity = new Room
@@ -57,7 +57,7 @@ public class RoomsApiController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateRoom(int id, RoomUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");

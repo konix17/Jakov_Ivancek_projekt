@@ -36,7 +36,7 @@ public class ReviewsApiController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ReviewDto>> CreateReview(ReviewCreateDto dto)
     {
         var entity = new Review { Rating = dto.Rating, Comment = dto.Comment, CreatedAt = dto.CreatedAt, GuestId = dto.GuestId, HotelId = dto.HotelId };
@@ -46,7 +46,7 @@ public class ReviewsApiController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateReview(int id, ReviewUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");

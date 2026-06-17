@@ -36,7 +36,7 @@ public class GuestsApiController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<GuestDto>> CreateGuest(GuestCreateDto dto)
     {
         var entity = new Guest { FirstName = dto.FirstName, LastName = dto.LastName, Email = dto.Email, PhoneNumber = dto.PhoneNumber, DateOfBirth = dto.DateOfBirth, DocumentNumber = dto.DocumentNumber };
@@ -46,7 +46,7 @@ public class GuestsApiController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateGuest(int id, GuestUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");

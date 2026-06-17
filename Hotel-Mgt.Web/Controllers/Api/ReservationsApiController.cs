@@ -36,7 +36,7 @@ public class ReservationsApiController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ReservationDto>> CreateReservation(ReservationCreateDto dto)
     {
         var entity = new Reservation { ReservationCode = dto.ReservationCode, ReservationDate = dto.ReservationDate, CheckInDate = dto.CheckInDate, CheckOutDate = dto.CheckOutDate, TotalPrice = dto.TotalPrice, Status = dto.Status, GuestId = dto.GuestId, RoomId = dto.RoomId };
@@ -46,7 +46,7 @@ public class ReservationsApiController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateReservation(int id, ReservationUpdateDto dto)
     {
         if (id != dto.Id) return BadRequest("Route id and payload id do not match.");
