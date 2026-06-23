@@ -300,24 +300,6 @@ namespace HotelMgt.Web.Models
                 RoomId = reservation.RoomId,
                 SelectedServiceIds = reservation.Services?.Select(s => s.Id).ToList() ?? new List<int>()
             };
-
-        public void UpdateEntity(Reservation reservation, IEnumerable<Service> services)
-        {
-            reservation.ReservationCode = ReservationCode;
-            reservation.ReservationDate = ReservationDate;
-            reservation.CheckInDate = CheckInDate;
-            reservation.CheckOutDate = CheckOutDate;
-            reservation.TotalPrice = TotalPrice;
-            reservation.Status = Status;
-            reservation.GuestId = GuestId;
-            reservation.RoomId = RoomId;
-            reservation.Services ??= new List<Service>();
-            reservation.Services.Clear();
-            foreach (var serviceId in SelectedServiceIds)
-            {
-                reservation.Services.Add(new Service { Id = serviceId });
-            }
-        }
     }
 
     public class PaymentFormModel

@@ -1,4 +1,4 @@
-﻿// Hotel Manager shared JavaScript helpers.
+// Hotel Manager shared JavaScript helpers.
 
 function debounce(fn, delay) {
     let timer = null;
@@ -222,10 +222,94 @@ function initializeDateTimePickers() {
     });
 }
 
+function bindGlobalSearch() {
+    const input = $("#globalSearchInput");
+    const results = $("#globalSearchResults");
+
+    if (!input.length) return;
+
+    const performGlobalSearch = debounce(function () {
+        const query = input.val().trim();
+        if (!query) {
+            results.empty().hide();
+            return;
+        }
+
+        $.getJSON("/api/search", { q: query })
+            .done(function (data) {
+                results.empty();
+                if (!data || data.length === 0) {
+                    results.append('<div class="autocomplete-item text-muted">Nema rezultata</div>');
+                } else {
+                    data.forEach(item => {
+                        const row = $(`<div class="autocomplete-item" style="display: flex; align-items: center; gap: 8px; justify-content: start;">
+                            <span class="badge bg-secondary">${item.category}</span>
+                            <span>${item.title}</span>
+                        </div>`);
+                        row.on("click", function () {
+                            window.location.href = item.url;
+                        });
+                        results.append(row);
+                    });
+                }
+                results.show();
+            })
+            .fail(function () {
+                results.empty().hide();
+            });
+    }, 300);
+
+    input.on("input", performGlobalSearch);
+
+    $(document).on("click", function (e) {
+        if (!$(e.target).closest("#globalSearchInput, #globalSearchResults").length) {
+            results.hide();
+        }
+    });
+
+    input.on("focus", function() {
+        if (input.val().trim()) {
+            results.show();
+        }
+    });
+}
+
+function bindMobileNavigation() {
+    const sidebar = $(".app-sidebar");
+    const backdrop = $("#mobileMenuBackdrop");
+    const toggleBtn = $("#mobileMenuToggle");
+    const closeBtn = $("#mobileMenuClose");
+
+    if (!toggleBtn.length) return;
+
+    toggleBtn.on("click", function () {
+        sidebar.addClass("show");
+        backdrop.addClass("show");
+    });
+
+    const closeMenu = function () {
+        sidebar.removeClass("show");
+        backdrop.removeClass("show");
+    };
+
+    closeBtn.on("click", closeMenu);
+    backdrop.on("click", closeMenu);
+    
+    // Also close menu when clicking on any nav link on mobile
+    sidebar.find(".nav-link").on("click", function () {
+        if ($(window).width() <= 940) {
+            closeMenu();
+        }
+    });
+}
+
 $(function () {
     bindAutocompleteWidgets();
     bindHotelRoomFilters();
     bindAjaxSearchForms();
     bindSaveAnimations();
     initializeDateTimePickers();
+    bindGlobalSearch();
+    bindMobileNavigation();
 });
+

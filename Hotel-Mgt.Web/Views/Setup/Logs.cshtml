@@ -1,0 +1,46 @@
+@model List<string>
+@{
+    ViewData["Title"] = "Korisnički Dnevnik (Logs)";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Nadzorna ploča</a>
+        <span class="sep">&gt;</span>
+        <a asp-controller="Setup" asp-action="Index">Setup</a>
+        <span class="sep">&gt;</span>
+        <span class="current">Dnevnik</span>
+    </nav>
+}
+
+<div class="panel-card fade-in">
+    <div class="section-header">
+        <h2>Zadnji HTTP Zahtjevi</h2>
+        <a asp-action="Index" class="btn btn-secondary btn-sm">Natrag na Setup</a>
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">Dnevnik je trenutno prazan ili datoteka requests.log ne postoji.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Zapisnik (Log Entry)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var line in Model)
+                    {
+                        <tr>
+                            <td style="font-family: monospace; white-space: pre-wrap; font-size: 0.9rem;">@line</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -1,0 +1,154 @@
+@{
+    ViewData["Title"] = "AI Asistent";
+}
+
+@section Breadcrumbs {
+    <nav class="breadcrumb-nav">
+        <a asp-controller="Home" asp-action="Index">Nadzorna ploča</a>
+        <span class="sep">&gt;</span>
+        <span class="current">AI Asistent</span>
+    </nav>
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="panel-card fade-in">
+            <h2>Upravljanje bazom podataka pomoću AI-ja</h2>
+            <p class="text-muted mb-4">
+                Unesite upit na prirodnom jeziku (hrvatski ili engleski) kako biste stvorili nove entitete u bazi podataka.
+                Naš AI motor će prepoznati namjeru, izvući podatke i automatski izvršiti izmjene.
+            </p>
+
+            <div class="form-group mb-4">
+                <label for="aiQueryText">Unesite vaš zahtjev:</label>
+                <textarea id="aiQueryText" class="form-control" placeholder="Npr. Kreiraj novog gosta Jakov Horvat, email jakov@test.com, mobitel 098765432, putovnica HR8888..." rows="4"></textarea>
+            </div>
+
+            <div class="d-flex gap-2 mb-4">
+                <button type="button" id="submitAiQuery" class="btn btn-primary">
+                    <span class="spinner-border spinner-border-sm d-none me-2" role="status" id="aiLoadingSpinner"></span>
+                    Pošalji AI Upit
+                </button>
+                <button type="button" id="clearAiQuery" class="btn btn-secondary">Očisti</button>
+            </div>
+
+            <div id="aiResultContainer" style="display: none;" class="mt-4">
+                <hr class="border-soft" />
+                <h3 class="mb-3">Rezultat obrade</h3>
+                <div id="aiStatusAlert" class="alert alert-success" role="alert">
+                    Uspješno izvršena operacija!
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h5>Izvršena akcija</h5>
+                        <p id="aiExecutedAction" class="fw-bold text-success">-</p>
+                        <h5>Detalji o novom zapisu</h5>
+                        <p id="aiRecordDetails">-</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Strukturirani AI JSON</h5>
+                        <pre id="aiStructuredJson" class="bg-dark text-light p-3 rounded" style="font-size: 0.85rem; max-height: 200px; overflow-y: auto; border: 1px solid var(--border-strong);"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="panel-card fade-in">
+            <h3>Primjeri upita</h3>
+            <p class="text-muted">Kliknite na bilo koji primjer ispod kako biste ga učitali u polje:</p>
+            <div class="list-group gap-2">
+                <button class="list-group-item list-group-item-action rounded p-3 example-prompt-btn" type="button">
+                    Kreiraj novog gosta: Jakov Ivanček, rođen 15.08.1990., email jakov@test.com, mobitel 0987654321, dokument HR77777
+                </button>
+                <button class="list-group-item list-group-item-action rounded p-3 example-prompt-btn" type="button">
+                    Dodaj novi hotel pod nazivom Hotel Grand Palace, adresa Glavna Ulica 45, u gradu Splitu, ocjena 5, broj telefona 021444555
+                </button>
+                <button class="list-group-item list-group-item-action rounded p-3 example-prompt-btn" type="button">
+                    Kreiraj sobu broj 305 u hotelu s cijenom od 120.00 eura po noćenju, kapaciteta za 2 osobe na 3. katu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            // Load examples
+            $(".example-prompt-btn").on("click", function () {
+                $("#aiQueryText").val($(this).text().trim());
+            });
+
+            // Clear input
+            $("#clearAiQuery").on("click", function () {
+                $("#aiQueryText").val("");
+                $("#aiResultContainer").hide();
+            });
+
+            // Submit query
+            $("#submitAiQuery").on("click", function () {
+                const query = $("#aiQueryText").val().trim();
+                if (!query) {
+                    alert("Molimo unesite tekstualni upit.");
+                    return;
+                }
+
+                // UI state loading
+                $("#submitAiQuery").prop("disabled", true);
+                $("#aiLoadingSpinner").removeClass("d-none");
+                $("#aiResultContainer").hide();
+
+                $.ajax({
+                    url: "/api/ai/parse",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ query: query }),
+                    success: function (response) {
+                        $("#submitAiQuery").prop("disabled", false);
+                        $("#aiLoadingSpinner").addClass("d-none");
+
+                        $("#aiStatusAlert")
+                            .removeClass("alert-danger")
+                            .addClass("alert-success")
+                            .text("Operacija uspješno izvršena!");
+
+                        $("#aiExecutedAction").text(response.action).removeClass("text-danger").addClass("text-success");
+                        $("#aiRecordDetails").text(response.details);
+                        $("#aiStructuredJson").text(JSON.stringify(JSON.parse(response.rawJson), null, 2));
+
+                        $("#aiResultContainer").fadeIn(300);
+                    },
+                    error: function (xhr) {
+                        $("#submitAiQuery").prop("disabled", false);
+                        $("#aiLoadingSpinner").addClass("d-none");
+
+                        $("#aiStatusAlert")
+                            .removeClass("alert-success")
+                            .addClass("alert-danger")
+                            .text("Greška kod obrade zahtjeva.");
+
+                        let errorMsg = "Dogodila se neočekivana pogreška.";
+                        let rawJson = "{}";
+                        if (xhr.responseJSON) {
+                            errorMsg = xhr.responseJSON.message || errorMsg;
+                            rawJson = xhr.responseJSON.rawJson || rawJson;
+                        }
+
+                        $("#aiExecutedAction").text("Neuspješno").removeClass("text-success").addClass("text-danger");
+                        $("#aiRecordDetails").text(errorMsg);
+                        try {
+                            $("#aiStructuredJson").text(JSON.stringify(JSON.parse(rawJson), null, 2));
+                        } catch {
+                            $("#aiStructuredJson").text(rawJson);
+                        }
+
+                        $("#aiResultContainer").fadeIn(300);
+                    }
+                });
+            });
+        });
+    </script>
+}

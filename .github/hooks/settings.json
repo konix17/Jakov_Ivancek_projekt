@@ -6,6 +6,76 @@
         "command": "sh .github/hooks/stop_hook.sh",
         "cwd": "."
       }
+    ],
+    "stop": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "onStop": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "on-stop": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "on_stop": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "agent-stop": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "agent_stop": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "post-session": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "post_session": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "post-chat": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "post_chat": [
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
     ]
   }
 }

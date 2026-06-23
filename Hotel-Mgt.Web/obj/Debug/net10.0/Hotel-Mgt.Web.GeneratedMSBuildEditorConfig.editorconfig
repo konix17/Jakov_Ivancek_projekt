@@ -90,6 +90,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvR3Vlc3RzL19HdWVzdHNUYWJsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/Views/Home/AiAssistant.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9BaUFzc2lzdGFudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -272,6 +276,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/Views/Setup/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2V0dXAvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/Views/Setup/Logs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2V0dXAvTG9ncy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Web/Views/Shared/Error.cshtml]

@@ -155,3 +155,18 @@ Always respond using this structure:
 
 ### Notes
 - Mention any missing files, assumptions, or next recommended step.
+
+## Turn-Based Session Logging Requirement
+> [!IMPORTANT]
+> To ensure the chat logs are updated continuously and dynamically, you **MUST** run the log generator script as the final tool call of **every single turn** (before presenting your response to the user).
+>
+> Run the following terminal command at the end of each turn:
+> ```bash
+> python3 .github/hooks/stop_hook.py << 'EOF'
+> {
+>   "transcript_path": "/Users/jakovivancek/.gemini/antigravity-ide/brain/<conversation-id>/.system_generated/logs/transcript.jsonl",
+>   "session_id": "<conversation-id>"
+> }
+> EOF
+> ```
+> Replace `<conversation-id>` with the actual `Conversation ID` provided in the session metadata (e.g., from the `<user_information>` block). Do not forget to perform this step before yielding control.

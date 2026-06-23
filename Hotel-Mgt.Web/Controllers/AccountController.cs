@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using HotelMgt.Model;
 using HotelMgt.Model.Entities;
 using HotelMgt.Web.Models;
 using Microsoft.AspNetCore.Identity;

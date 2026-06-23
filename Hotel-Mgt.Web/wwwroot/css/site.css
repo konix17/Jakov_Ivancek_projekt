@@ -19,15 +19,45 @@
 
 * {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) var(--bg-page);
+}
+
+/* Custom premium scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-page);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 html,
 body {
-  min-height: 100%;
+  height: 100vh;
   margin: 0;
+  overflow: hidden;
   font-family: 'Segoe UI', system-ui, sans-serif;
   background: radial-gradient(circle at top, rgba(56, 189, 248, 0.09), transparent 35%), var(--bg-page);
   color: var(--text-primary);
+}
+
+@media (max-width: 940px) {
+  html,
+  body {
+    height: auto;
+    overflow: auto;
+  }
 }
 
 img {
@@ -54,12 +84,15 @@ textarea {
 .app-shell {
   display: grid;
   grid-template-columns: 260px 1fr;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 @media (max-width: 940px) {
   .app-shell {
     grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
   }
 }
 
@@ -69,6 +102,15 @@ textarea {
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1.2rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+@media (max-width: 940px) {
+  .app-sidebar {
+    height: auto;
+    overflow: visible;
+  }
 }
 
 .brand-panel {
@@ -171,11 +213,17 @@ input.saving {
 
 .app-main {
   padding: 1.75rem 2rem;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 940px) {
   .app-main {
     padding: 1.1rem 1rem 1.5rem;
+    height: auto;
+    overflow: visible;
   }
 }
 
@@ -185,6 +233,8 @@ input.saving {
   gap: 1rem;
   align-items: start;
   margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 100;
 }
 
 @media (max-width: 720px) {
@@ -247,6 +297,7 @@ input.saving {
 .page-content {
   display: grid;
   gap: 1.5rem;
+  flex-grow: 1;
 }
 
 .panel-card,
@@ -569,7 +620,7 @@ input.saving {
   top: calc(100% + 0.45rem);
   left: 0;
   right: 0;
-  z-index: 15;
+  z-index: 9999;
   background: var(--bg-surface);
   border: 1px solid var(--border-strong);
   border-radius: 14px;
@@ -1038,4 +1089,203 @@ span.flatpickr-weekday {
   color: var(--text-faint);
   font-size: 0.95rem;
   line-height: 1.7;
+}
+
+/* Custom styling for AI Example prompt buttons */
+.example-prompt-btn {
+  background: rgba(56, 189, 248, 0.07) !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  color: var(--accent) !important;
+  font-weight: 500;
+  transition: all 0.22s ease !important;
+  text-align: left;
+  line-height: 1.5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.example-prompt-btn:hover {
+  background: rgba(56, 189, 248, 0.16) !important;
+  border-color: var(--accent) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(56, 189, 248, 0.2);
+}
+
+/* Mobile top header navigation styling */
+.mobile-header {
+  display: none;
+}
+
+.sidebar-header-mobile {
+  display: none;
+}
+
+.mobile-menu-backdrop {
+  display: none;
+}
+
+@media (max-width: 940px) {
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+    background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border-soft);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 60px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .mobile-menu-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hamburger-bar {
+    width: 22px;
+    height: 2.5px;
+    background-color: var(--accent);
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+
+  .sidebar-header-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .mobile-sidebar-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .btn-close-mobile {
+    background: transparent;
+    border: none;
+    color: var(--text-faint);
+    font-size: 2.2rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+  }
+
+  .btn-close-mobile:hover {
+    color: var(--danger);
+  }
+
+  .mobile-menu-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 8, 16, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1500;
+    transition: opacity 0.3s ease;
+    display: none;
+    opacity: 0;
+  }
+
+  .mobile-menu-backdrop.show {
+    display: block;
+    opacity: 1;
+  }
+
+  .app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 290px;
+    height: 100vh;
+    z-index: 2000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .app-sidebar.show {
+    transform: translateX(0);
+  }
+
+  /* Enhancements for responsive layouts, cards, and tables */
+  .app-main {
+    padding: 1rem 0.75rem !important;
+  }
+
+  .panel-card,
+  .small-card {
+    padding: 1.15rem 0.85rem !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .panel-card h2 {
+    font-size: 1.35rem !important;
+    margin-bottom: 0.85rem !important;
+  }
+
+  .page-topbar {
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .page-title h1 {
+    font-size: 1.55rem !important;
+  }
+
+  .page-note {
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+    margin-top: 0.45rem !important;
+  }
+
+  .breadcrumb-nav {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.82rem !important;
+    border-radius: 10px !important;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.6rem 0.5rem !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
+  }
+
+  .form-grid {
+    gap: 0.85rem !important;
+  }
+
+  .metric-value {
+    font-size: 1.7rem !important;
+  }
 }

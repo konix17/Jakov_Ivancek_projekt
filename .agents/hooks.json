@@ -1,0 +1,129 @@
+{
+  "SessionEnd": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "sh .github/hooks/stop_hook.sh",
+          "cwd": "."
+        }
+      ]
+    },
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "sh .github/hooks/stop_hook.sh",
+          "cwd": "."
+        }
+      ]
+    },
+    {
+      "type": "command",
+      "command": "sh .github/hooks/stop_hook.sh",
+      "cwd": "."
+    }
+  ],
+  "Stop": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "sh .github/hooks/stop_hook.sh",
+          "cwd": "."
+        }
+      ]
+    },
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "sh .github/hooks/stop_hook.sh",
+          "cwd": "."
+        }
+      ]
+    },
+    {
+      "type": "command",
+      "command": "sh .github/hooks/stop_hook.sh",
+      "cwd": "."
+    }
+  ],
+  "PostInvocation": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "sh .github/hooks/stop_hook.sh",
+          "cwd": "."
+        }
+      ]
+    },
+    {
+      "type": "command",
+      "command": "sh .github/hooks/stop_hook.sh",
+      "cwd": "."
+    }
+  ],
+  "agent-logs": {
+    "SessionEnd": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh .github/hooks/stop_hook.sh",
+            "cwd": "."
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh .github/hooks/stop_hook.sh",
+            "cwd": "."
+          }
+        ]
+      },
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh .github/hooks/stop_hook.sh",
+            "cwd": "."
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh .github/hooks/stop_hook.sh",
+            "cwd": "."
+          }
+        ]
+      },
+      {
+        "type": "command",
+        "command": "sh .github/hooks/stop_hook.sh",
+        "cwd": "."
+      }
+    ]
+  }
+}

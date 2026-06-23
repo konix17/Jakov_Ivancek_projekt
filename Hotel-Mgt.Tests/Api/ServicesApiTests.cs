@@ -39,4 +39,26 @@ public class ServicesApiTests
         });
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
+
+    [Fact]
+    public async Task Post_Service_WithAdminUser_ReturnsCreated()
+    {
+        using var factory = new AuthenticatedWebApplicationFactory();
+        using var client = factory.CreateClient();
+
+        // 1. Create Hotel
+        var hotelResponse = await client.PostAsJsonAsync("/api/hotels", new { Name = "Test Hotel", Address = "A", City = "C", Rating = 5, PhoneNumber = "1" });
+        var hotel = await hotelResponse.Content.ReadFromJsonAsync<HotelDto>();
+
+        // 2. Create Service
+        var response = await client.PostAsJsonAsync("/api/services", new
+        {
+            Name = "Spa",
+            Description = "Relaxing spa",
+            Price = 50,
+            HotelId = hotel!.Id
+        });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+    }
 }

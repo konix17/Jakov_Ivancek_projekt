@@ -1,4 +1,4 @@
-﻿@{
+@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
     var isAuthenticated = User?.Identity?.IsAuthenticated == true;
@@ -19,15 +19,33 @@
     <link rel="stylesheet" href="~/Hotel-Mgt.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
+    <div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
+    <div class="mobile-header">
+        <button id="mobileMenuToggle" class="mobile-menu-btn" aria-label="Otvori izbornik">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
+        <span class="mobile-brand">Hotel Manager</span>
+        <div style="width: 40px;"></div>
+    </div>
     <div class="app-shell">
         <aside class="app-sidebar">
+            <div class="sidebar-header-mobile">
+                <span class="mobile-sidebar-title">Hotel Manager</span>
+                <button id="mobileMenuClose" class="btn-close-mobile">&times;</button>
+            </div>
             <div class="brand-panel">
                 <a class="brand-title" asp-area="" asp-controller="Home" asp-action="Index">Hotel Manager</a>
                 <p class="brand-tagline">Hotel managment system</p>
             </div>
             <nav class="sidebar-nav">
                 <span class="nav-label">Main</span>
-                <a class="nav-link @(currentController == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
+                <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
+                @if (isAdmin)
+                {
+                    <a class="nav-link @(currentController == "Home" && currentAction == "AiAssistant" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="AiAssistant">AI Asistent</a>
+                }
                 <span class="nav-label">Resources</span>
                 <a class="nav-link @(currentController == "Hotels" ? "active" : "")" asp-area="" asp-controller="Hotels" asp-action="Index">Hotels</a>
                 <a class="nav-link @(currentController == "Rooms" ? "active" : "")" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
@@ -55,6 +73,10 @@
                     }
                 </div>
                 <div class="breadcrumb-shell">
+                    <div class="position-relative mb-2" style="min-width: 250px;">
+                        <input type="text" id="globalSearchInput" class="form-control form-control-sm search-input" placeholder="Pretraži sustav..." autocomplete="off" />
+                        <div id="globalSearchResults" class="autocomplete-results"></div>
+                    </div>
                     @RenderSection("Breadcrumbs", required: false)
                     <div class="d-flex gap-2 flex-wrap mt-2 align-items-center">
                         @if (isAuthenticated)
@@ -67,6 +89,7 @@
                             @if (isAdmin)
                             {
                                 <a class="btn btn-secondary btn-sm" asp-controller="Setup" asp-action="Index">Setup</a>
+                                <a class="btn btn-secondary btn-sm" asp-controller="Setup" asp-action="Logs">Logs</a>
                             }
                         }
                         else

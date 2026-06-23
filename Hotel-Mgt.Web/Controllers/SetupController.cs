@@ -109,4 +109,21 @@ public class SetupController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Logs()
+    {
+        ViewData["Title"] = "Korisnički Dnevnik (Logs)";
+        ViewData["Description"] = "Prikaz zadnjih 100 HTTP zahtjeva zabilježenih kroz LoggingMiddleware.";
+
+        var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "logs", "requests.log");
+        var logLines = new List<string>();
+
+        if (System.IO.File.Exists(logFilePath))
+        {
+            var lines = await System.IO.File.ReadAllLinesAsync(logFilePath);
+            logLines = lines.Reverse().Take(100).ToList();
+        }
+
+        return View(logLines);
+    }
 }

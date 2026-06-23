@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using HotelMgt.Model.Enums;
 using HotelMgt.Web.Models;
 using HotelMgt.Web.Repositories;
@@ -92,6 +93,15 @@ public class HomeController : Controller
 
     public IActionResult Privacy()
     {
+        return View();
+    }
+
+    [HttpGet("ai-assistant")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult AiAssistant()
+    {
+        ViewData["Title"] = "AI Asistent";
+        ViewData["Description"] = "Unosite i upravljajte podacima sustava koristeći prirodan jezik.";
         return View();
     }
 

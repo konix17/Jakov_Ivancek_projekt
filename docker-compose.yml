@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Hotel-Mgt.Web/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - hotel-db-data:/app/data
+    environment:
+      - ConnectionStrings__HotelDb=Data Source=/app/data/HotelDb.db
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: always
+
+volumes:
+  hotel-db-data:
