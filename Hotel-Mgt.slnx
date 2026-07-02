@@ -3,4 +3,5 @@
   <Project Path="Hotel-Mgt.Tests/Hotel-Mgt.Tests.csproj" />
   <Project Path="Hotel-Mgt.Web/Hotel-Mgt.Web.csproj" />
   <Project Path="Hotel-Mgt.Console/Hotel-Mgt.Console.csproj" />
+  <Project Path="Hotel-Mgt.PlaywrightTests/Hotel-Mgt.PlaywrightTests.csproj" />
 </Solution>

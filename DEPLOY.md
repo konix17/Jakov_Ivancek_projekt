@@ -6,6 +6,28 @@ This guide explains how to deploy the Hotel Management Web Application to a Clou
 - Docker installed on the target machine/VM.
 - Docker Compose installed.
 
+## Secrets
+
+`appsettings.json` and `appsettings.Development.json` intentionally ship with **empty** values for `Gemini:ApiKey` and `Authentication:Google:ClientId`/`ClientSecret` — these are secrets and must never be committed. The app degrades gracefully when they're empty (AI assistant falls back to a rules-based parser, Google login button is hidden).
+
+- **Local development**: store real values with `dotnet user-secrets` (already initialized for `Hotel-Mgt.Web`), which keeps them out of the repo:
+  ```bash
+  cd Hotel-Mgt.Web
+  dotnet user-secrets set "Gemini:ApiKey" "<your-key>"
+  dotnet user-secrets set "Authentication:Google:ClientId" "<your-client-id>"
+  dotnet user-secrets set "Authentication:Google:ClientSecret" "<your-client-secret>"
+  ```
+- **Docker Compose / VM**: pass them as environment variables (double underscore denotes nested config), e.g. in `docker-compose.yml` or the container's env:
+  ```
+  Gemini__ApiKey=<your-key>
+  Authentication__Google__ClientId=<your-client-id>
+  Authentication__Google__ClientSecret=<your-client-secret>
+  ```
+- **Fly.io**: `fly secrets set Gemini__ApiKey=<your-key> Authentication__Google__ClientId=<your-client-id> Authentication__Google__ClientSecret=<your-client-secret>`
+- **Cloud Run / App Service**: set the same as environment variables / app settings in the provider's console or CLI.
+
+If you previously had real values committed in this repo, treat them as compromised — rotate/revoke the Gemini API key and the Google OAuth client secret in their respective consoles.
+
 ## Option 1: Running with Docker Compose (Recommended for VMs)
 
 1. Clone or copy the project files to your Virtual Machine.

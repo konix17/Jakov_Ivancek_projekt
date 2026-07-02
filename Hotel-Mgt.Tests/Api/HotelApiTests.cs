@@ -128,6 +128,41 @@ public class HotelApiTests
     }
 
     [Fact]
+    public async Task Delete_Hotel_WithServices_RemovesHotelAndServices()
+    {
+        using var factory = new AuthenticatedWebApplicationFactory();
+        using var client = factory.CreateClient();
+
+        var createResponse = await client.PostAsJsonAsync("/api/hotels", new
+        {
+            Name = "Bay Hotel",
+            Address = "Main Street 1",
+            City = "Zagreb",
+            Rating = 5,
+            PhoneNumber = "012345678"
+        });
+        var created = await createResponse.Content.ReadFromJsonAsync<HotelDto>();
+        Assert.NotNull(created);
+
+        var serviceResponse = await client.PostAsJsonAsync("/api/services", new
+        {
+            Name = "Breakfast",
+            Description = "Buffet breakfast",
+            Price = 15,
+            IsAvailable = true,
+            HotelId = created!.Id
+        });
+        Assert.Equal(HttpStatusCode.Created, serviceResponse.StatusCode);
+
+        var deleteResponse = await client.DeleteAsync($"/api/hotels/{created.Id}");
+
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+        var getResponse = await client.GetAsync($"/api/hotels/{created.Id}");
+        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task Post_Hotel_WithInvalidData_ReturnsBadRequest()
     {
         using var factory = new AuthenticatedWebApplicationFactory();

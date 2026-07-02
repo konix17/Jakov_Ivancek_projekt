@@ -1,0 +1,18 @@
+# .NET build output
+bin/
+obj/
+*.user
+
+# IDE
+.vs/
+.idea/
+*.suo
+
+# Playwright
+.playwright/
+
+# Python (hook scripts)
+__pycache__/
+
+# macOS
+.DS_Store

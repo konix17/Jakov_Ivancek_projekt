@@ -1,9 +1,6 @@
 using HotelMgt.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HotelMgt.Web.Controllers.Api;
 
@@ -19,7 +16,7 @@ public class SearchApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SearchResultItem>>> Search([FromQuery] string q)
+    public async Task<ActionResult<IEnumerable<SearchResultItem>>> Search([FromQuery] string? q)
     {
         if (string.IsNullOrWhiteSpace(q))
         {

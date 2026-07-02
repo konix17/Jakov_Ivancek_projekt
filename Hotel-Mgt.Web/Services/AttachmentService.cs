@@ -3,11 +3,6 @@ using HotelMgt.Model.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HotelMgt.Web.Services;
 
@@ -33,6 +28,8 @@ public class AttachmentService : IAttachmentService
             .ToListAsync();
     }
 
+    private string WebRootPath => _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot");
+
     public async Task<Attachment?> UploadAttachmentAsync(int hotelId, IFormFile file)
     {
         var hotel = await _context.Hotels.FindAsync(hotelId);
@@ -40,7 +37,7 @@ public class AttachmentService : IAttachmentService
 
         if (file == null || file.Length == 0) return null;
 
-        var uploadsPath = Path.Combine(_environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"), "uploads", "hotels", hotelId.ToString());
+        var uploadsPath = Path.Combine(WebRootPath, "uploads", "hotels", hotelId.ToString());
         Directory.CreateDirectory(uploadsPath);
 
         var fileName = Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName);
@@ -72,7 +69,7 @@ public class AttachmentService : IAttachmentService
         var attachment = await _context.Attachments.SingleOrDefaultAsync(a => a.Id == attachmentId && a.HotelId == hotelId);
         if (attachment == null) return false;
 
-        var physicalPath = Path.Combine(_environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"), attachment.FilePath.TrimStart('/'));
+        var physicalPath = Path.Combine(WebRootPath, attachment.FilePath.TrimStart('/'));
         if (System.IO.File.Exists(physicalPath))
         {
             System.IO.File.Delete(physicalPath);

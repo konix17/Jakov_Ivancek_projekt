@@ -65,6 +65,45 @@ TOOL_TYPE_MAP = {
     'MANAGE_TASK': 'manage_task'
 }
 
+
+def render_claude_code_blocks(content):
+    """Claude Code transcript entries nest their payload in message.content,
+    a list of blocks (text, thinking, tool_use, tool_result, document, image).
+    Returns (text_parts, tool_names, has_only_tool_result)."""
+    if isinstance(content, str):
+        return ([content.strip()] if content.strip() else []), [], False
+
+    if not isinstance(content, list):
+        return [], [], False
+
+    text_parts = []
+    tool_names = []
+    saw_real_content = False
+    for block in content:
+        if not isinstance(block, dict):
+            continue
+        btype = block.get('type')
+        if btype == 'text':
+            text = (block.get('text') or '').strip()
+            if text:
+                text_parts.append(text)
+                saw_real_content = True
+        elif btype == 'document':
+            title = block.get('title') or 'attachment'
+            text_parts.append(f'*[attached: {title}]*')
+            saw_real_content = True
+        elif btype == 'image':
+            text_parts.append('*[image attached]*')
+            saw_real_content = True
+        elif btype == 'tool_use':
+            tool_names.append(block.get('name') or 'unknown_tool')
+            saw_real_content = True
+        # 'thinking' and 'tool_result' blocks are intentionally skipped:
+        # thinking is internal reasoning, and tool_result entries are the
+        # automatic tool-output turns fed back as synthetic "user" messages.
+
+    return text_parts, tool_names, not saw_real_content
+
 try:
     date_stamp = datetime.now().strftime('%Y-%m-%d')
     time_stamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -133,6 +172,29 @@ try:
                                 writer.write(f'\n- **Tool start:** {tool_name}\n')
                 elif entry_type in TOOL_TYPE_MAP:
                     writer.write(f'- **Tool end:** {TOOL_TYPE_MAP[entry_type]}\n')
+
+                # Claude Code format: top-level type is "user"/"assistant",
+                # actual payload is message.content (a list of blocks).
+                elif entry_type in ('user', 'assistant'):
+                    message = entry.get('message') or {}
+                    content = message.get('content')
+                    if content is None:
+                        continue
+                    text_parts, tool_names, is_tool_result_only = render_claude_code_blocks(content)
+
+                    if entry_type == 'user':
+                        # Skip synthetic turns that only carry a tool_result
+                        # (Claude Code feeds tool output back as a "user" entry)
+                        if is_tool_result_only or not text_parts:
+                            continue
+                        writer.write(f'\n## User [{time_label}]\n\n')
+                        writer.write('\n\n'.join(text_parts) + '\n')
+                    else:
+                        if text_parts:
+                            writer.write(f'\n## AI Assistant [{time_label}]\n\n')
+                            writer.write('\n\n'.join(text_parts) + '\n')
+                        for tool_name in tool_names:
+                            writer.write(f'\n- **Tool call:** {tool_name}\n')
 
     print(json.dumps({'continue': True}))
 except Exception:

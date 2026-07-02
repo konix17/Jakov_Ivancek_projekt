@@ -1,1 +1,0 @@
-cd /Users/jakovivancek/Desktop/Jakov_Ivancek_projekt/Hotel-Mgt.Tests && dotnet test --no-restore --logger "console;verbosity=minimal"

@@ -1,10 +1,9 @@
 using HotelMgt.Model.Entities;
 using HotelMgt.Web.Models;
 using HotelMgt.Web.Repositories;
+using HotelMgt.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace HotelMgt.Web.Controllers;
@@ -13,9 +12,9 @@ namespace HotelMgt.Web.Controllers;
 public class HotelsController : Controller
 {
     private readonly IHotelRepository _repository;
-    private readonly HotelMgt.Web.Services.IAttachmentService _attachmentService;
+    private readonly IAttachmentService _attachmentService;
 
-    public HotelsController(IHotelRepository repository, HotelMgt.Web.Services.IAttachmentService attachmentService)
+    public HotelsController(IHotelRepository repository, IAttachmentService attachmentService)
     {
         _repository = repository;
         _attachmentService = attachmentService;

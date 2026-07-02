@@ -2,13 +2,8 @@ using HotelMgt.Model;
 using HotelMgt.Model.Entities;
 using HotelMgt.Model.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 
 class Program
 {

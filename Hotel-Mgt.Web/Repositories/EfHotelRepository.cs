@@ -1,9 +1,6 @@
 using HotelMgt.Model.Entities;
 using HotelMgt.Model;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HotelMgt.Web.Repositories;
 
@@ -58,13 +55,20 @@ public class EfHotelRepository : IHotelRepository
     public void UpdateHotel(Hotel hotel) => _context.Hotels.Update(hotel);
     public async Task DeleteHotelAsync(int id)
     {
-        var entity = await _context.Hotels.FindAsync(id);
-        if (entity != null)
+        var exists = await _context.Hotels.AnyAsync(h => h.Id == id);
+        if (!exists)
         {
-            _context.ChangeTracker.Clear();
-            var stub = new Hotel { Id = id };
-            _context.Hotels.Remove(stub);
+            return;
         }
+
+        _context.ChangeTracker.Clear();
+
+        // The Service -> Hotel foreign key does not cascade at the database level,
+        // so dependent services must be removed explicitly before the hotel itself.
+        var services = await _context.Services.Where(s => s.HotelId == id).ToListAsync();
+        _context.Services.RemoveRange(services);
+
+        _context.Hotels.Remove(new Hotel { Id = id });
     }
 
     public async Task<List<Room>> GetAllRoomsAsync()

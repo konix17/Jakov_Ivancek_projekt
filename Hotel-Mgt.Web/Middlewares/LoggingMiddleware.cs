@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Diagnostics;
-using System.IO;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace HotelMgt.Web.Middlewares;
 

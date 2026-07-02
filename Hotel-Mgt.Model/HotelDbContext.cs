@@ -35,7 +35,7 @@ public class HotelDbContext : IdentityDbContext<AppUser>
             .HasOne(s => s.Hotel)
             .WithMany(h => h.Services)
             .HasForeignKey(s => s.HotelId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Hotel)

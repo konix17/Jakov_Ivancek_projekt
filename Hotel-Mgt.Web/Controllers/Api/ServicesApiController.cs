@@ -3,9 +3,6 @@ using HotelMgt.Web.DTOs;
 using HotelMgt.Web.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace HotelMgt.Web.Controllers.Api;
 

@@ -1,6 +1,7 @@
 using HotelMgt.Model;
 using HotelMgt.Model.Entities;
 using HotelMgt.Web.Repositories;
+using HotelMgt.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Data.Sqlite;
@@ -27,7 +28,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<HotelDbContext>(options =>
     options.UseSqlite(sqliteConnectionString));
 builder.Services.AddScoped<IHotelRepository, EfHotelRepository>();
-builder.Services.AddScoped<HotelMgt.Web.Services.IAttachmentService, HotelMgt.Web.Services.AttachmentService>();
+builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 
 var authenticationBuilder = builder.Services.AddAuthentication();
 
@@ -62,7 +63,7 @@ var forwardedOptions = new ForwardedHeadersOptions
 {
     ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
 };
-forwardedOptions.KnownNetworks.Clear();
+forwardedOptions.KnownIPNetworks.Clear();
 forwardedOptions.KnownProxies.Clear();
 app.UseForwardedHeaders(forwardedOptions);
 
@@ -106,18 +107,11 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<HotelDbContext>();
 
-    var sqliteBuilder = new SqliteConnectionStringBuilder(sqliteConnectionString);
-    var dbPath = sqliteBuilder.DataSource;
-    if (!Path.IsPathRooted(dbPath))
-    {
-        dbPath = Path.Combine(app.Environment.ContentRootPath, dbPath);
-    }
-
-    await using var resetConnection = new SqliteConnection(sqliteConnectionString);
-    await resetConnection.OpenAsync();
-    await using var resetCommand = resetConnection.CreateCommand();
-    resetCommand.CommandText = "PRAGMA foreign_keys=ON;";
-    await resetCommand.ExecuteNonQueryAsync();
+    await using var pragmaConnection = new SqliteConnection(sqliteConnectionString);
+    await pragmaConnection.OpenAsync();
+    await using var pragmaCommand = pragmaConnection.CreateCommand();
+    pragmaCommand.CommandText = "PRAGMA foreign_keys=ON;";
+    await pragmaCommand.ExecuteNonQueryAsync();
 
     await db.Database.EnsureCreatedAsync();
 

@@ -65,6 +65,45 @@ $outFile = Join-Path $logDir "chat_${dateStamp}_${sessionId}.md"
 "- date: $dateStamp" | Add-Content $outFile
 "" | Add-Content $outFile
 
+function Get-ClaudeCodeBlocks($content) {
+    # Claude Code transcript entries nest their payload in message.content,
+    # a list of blocks (text, thinking, tool_use, tool_result, document, image).
+    $textParts = New-Object System.Collections.Generic.List[string]
+    $toolNames = New-Object System.Collections.Generic.List[string]
+    $sawRealContent = $false
+
+    if ($content -is [string]) {
+        if ($content.Trim()) { $textParts.Add($content.Trim()) | Out-Null; $sawRealContent = $true }
+        return @{ Text = $textParts; Tools = $toolNames; ToolResultOnly = -not $sawRealContent }
+    }
+
+    foreach ($block in $content) {
+        switch ($block.type) {
+            "text" {
+                if ($block.text -and $block.text.Trim()) {
+                    $textParts.Add($block.text.Trim()) | Out-Null
+                    $sawRealContent = $true
+                }
+            }
+            "document" {
+                $title = if ($block.title) { $block.title } else { "attachment" }
+                $textParts.Add("*[attached: $title]*") | Out-Null
+                $sawRealContent = $true
+            }
+            "image" {
+                $textParts.Add("*[image attached]*") | Out-Null
+                $sawRealContent = $true
+            }
+            "tool_use" {
+                $toolNames.Add($(if ($block.name) { $block.name } else { "unknown_tool" })) | Out-Null
+                $sawRealContent = $true
+            }
+            # "thinking" and "tool_result" blocks intentionally skipped
+        }
+    }
+    return @{ Text = $textParts; Tools = $toolNames; ToolResultOnly = -not $sawRealContent }
+}
+
 Get-Content $transcriptPath | ForEach-Object {
     try {
         $entry = $_ | ConvertFrom-Json
@@ -117,6 +156,29 @@ Get-Content $transcriptPath | ForEach-Object {
                             "" | Add-Content $outFile
                             "- **Tool start:** $($tc.name)" | Add-Content $outFile
                         }
+                    }
+                }
+            }
+            { $_ -in @("user", "assistant") } {
+                if (-not $entry.message -or $null -eq $entry.message.content) { return }
+                $parsed = Get-ClaudeCodeBlocks $entry.message.content
+
+                if ($entry.type -eq "user") {
+                    if ($parsed.ToolResultOnly -or $parsed.Text.Count -eq 0) { return }
+                    "" | Add-Content $outFile
+                    "## User [$time]" | Add-Content $outFile
+                    "" | Add-Content $outFile
+                    ($parsed.Text -join "`n`n") | Add-Content $outFile
+                } else {
+                    if ($parsed.Text.Count -gt 0) {
+                        "" | Add-Content $outFile
+                        "## AI Assistant [$time]" | Add-Content $outFile
+                        "" | Add-Content $outFile
+                        ($parsed.Text -join "`n`n") | Add-Content $outFile
+                    }
+                    foreach ($toolName in $parsed.Tools) {
+                        "" | Add-Content $outFile
+                        "- **Tool call:** $toolName" | Add-Content $outFile
                     }
                 }
             }
